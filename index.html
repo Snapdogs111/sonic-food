@@ -3,824 +3,456 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#e63946">
-<title>SONIC FOOD - Online Food Delivery</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SONIC FOOD | Food Delivery</title>
 <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#e23744">
 
 <style>
 *{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:Arial,sans-serif;
-  background:#f6f6f6;
-  color:#222;
-}
-header{
-  background:#e63946;
-  color:white;
-  padding:17px;
-  text-align:center;
-}
-header h1{margin:0}
-header p{margin:5px 0 0}
-.container{
-  max-width:1100px;
-  margin:auto;
-  padding:15px;
-}
-.card{
-  background:white;
-  border-radius:12px;
-  padding:16px;
-  margin-bottom:15px;
-  box-shadow:0 2px 8px #ddd;
-}
-input,textarea,select{
-  width:100%;
-  padding:12px;
-  margin:7px 0 12px;
-  border:1px solid #ccc;
-  border-radius:7px;
-  font-size:15px;
-}
-button{
-  border:0;
-  padding:12px 16px;
-  border-radius:7px;
-  background:#e63946;
-  color:white;
-  cursor:pointer;
-  font-size:15px;
-}
-button:disabled{
-  opacity:.5;
-  cursor:not-allowed;
-}
-.secondary{background:#555}
-.green{background:#168a45}
-.small{padding:7px 11px;font-size:13px}
+body{margin:0;font-family:Arial,sans-serif;background:#f7f7f7;color:#252525}
+header{background:white;padding:15px 5%;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 10px #ddd;position:sticky;top:0;z-index:5}
+.logo{font-size:25px;font-weight:900;color:#e23744}
+header button{width:auto}
+button{border:0;border-radius:8px;padding:12px 18px;background:#e23744;color:white;font-weight:bold;cursor:pointer}
+button:hover{opacity:.9}
+input,select,textarea{width:100%;padding:13px;border:1px solid #ddd;border-radius:8px;margin:7px 0;font-size:15px}
+main{max-width:1100px;margin:auto;padding:18px}
+.hero{background:linear-gradient(120deg,#e23744,#ff765d);color:white;padding:35px 22px;border-radius:16px;margin:15px 0}
+.hero h1{font-size:32px;margin:0 0 10px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px}
+.card{background:white;border-radius:13px;padding:17px;margin:12px 0;box-shadow:0 2px 10px #0000000b}
+.food{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.food button{white-space:nowrap}
+.price{color:#e23744;font-weight:bold}
+.small{color:#777;font-size:13px}
 .hidden{display:none!important}
-.menuGrid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
-  gap:15px;
-}
-.food{
-  background:white;
-  border-radius:12px;
-  padding:15px;
-  box-shadow:0 2px 8px #ddd;
-}
-.food .emoji{font-size:48px;text-align:center}
-.food h3{margin:8px 0}
-.price{font-weight:bold;color:#e63946}
-.cartItem{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:10px;
-  border-bottom:1px solid #eee;
-  padding:10px 0;
-}
-.cartItem div{min-width:0}
-.total{
-  font-size:20px;
-  font-weight:bold;
-  margin-top:12px;
-}
-#loginScreen{
-  position:fixed;
-  inset:0;
-  z-index:9999;
-  background:#f5f5f5;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  padding:15px;
-  overflow:auto;
-}
-.loginBox{
-  background:white;
-  width:100%;
-  max-width:390px;
-  padding:25px;
-  border-radius:15px;
-  box-shadow:0 3px 15px #ddd;
-}
-.loginBox h2{
-  text-align:center;
-  color:#e63946;
-}
-#loginMessage{
-  overflow-wrap:anywhere;
-  font-size:14px;
-}
-#userBar{
-  background:white;
-  padding:12px;
-  text-align:center;
-}
-.status{
-  background:#fff3cd;
-  padding:10px;
-  border-radius:7px;
-}
-footer{
-  background:#222;
-  color:white;
-  text-align:center;
-  padding:20px;
-  margin-top:30px;
-}
-@media(max-width:500px){
-  .cartItem{align-items:flex-start}
-}
+#loginPage{position:fixed;inset:0;background:#fff;z-index:20;display:flex;align-items:center;justify-content:center;padding:18px;overflow:auto}
+.loginBox{width:100%;max-width:420px;border:1px solid #eee;border-radius:18px;padding:28px;box-shadow:0 8px 35px #00000012;text-align:center}
+.loginLogo{font-size:35px;color:#e23744;font-weight:900}
+.google{background:white;color:#333;border:1px solid #ccc;width:100%;margin:10px 0}
+.google span{font-weight:bold;color:#4285f4}
+.loginBtn{width:100%;margin-top:8px}
+.divider{display:flex;align-items:center;gap:10px;color:#888;margin:15px 0}
+.divider:before,.divider:after{content:"";height:1px;background:#ddd;flex:1}
+.tabs{display:flex;gap:8px}
+.tabs button{flex:1;background:#eee;color:#333}
+.tabs button.active{background:#e23744;color:white}
+section h2{font-size:22px}
+footer{text-align:center;color:#888;padding:25px}
 </style>
 </head>
 
 <body>
 
-<!-- OTP LOGIN SCREEN -->
-<div id="loginScreen">
-  <div class="loginBox">
-    <h2>🍔 SONIC FOOD</h2>
-    <h3>Mobile Number Login</h3>
-    <p>Continue using your mobile number.</p>
+<div id="loginPage">
+ <div class="loginBox">
+  <div class="loginLogo">🍔 SONIC FOOD</div>
+  <h2>Welcome to SONIC FOOD</h2>
+  <p class="small">Login to order your favourite food</p>
 
-    <label>Mobile Number</label>
-    <input id="loginPhone" type="tel"
-      placeholder="+91XXXXXXXXXX">
+  <button class="google" id="googleLogin">
+   <span>G</span> &nbsp; Continue with Google
+  </button>
 
-    <div id="loginRecaptcha"></div>
+  <div class="divider">OR</div>
 
-    <button id="sendLoginOTP" style="width:100%">
-      Send OTP
-    </button>
-
-    <label>Enter OTP</label>
-    <input id="loginOTP" type="text"
-      maxlength="6" inputmode="numeric"
-      placeholder="Enter 6 digit OTP">
-
-    <button id="verifyLoginOTP" style="width:100%">
-      Verify OTP
-    </button>
-
-    <p id="loginMessage"></p>
+  <div class="tabs">
+   <button id="loginTab" class="active">Login</button>
+   <button id="signupTab">Sign Up</button>
   </div>
+
+  <input id="email" type="email" placeholder="Email Address">
+  <input id="password" type="password" placeholder="Password">
+
+  <button id="emailSubmit" class="loginBtn">Login</button>
+  <button id="forgotPassword" class="google">Forgot Password?</button>
+
+  <p id="authMessage" class="small"></p>
+  <p class="small">By continuing, you agree to our Terms and Privacy Policy.</p>
+ </div>
 </div>
 
 <header>
-  <h1>🍔 SONIC FOOD</h1>
-  <p>Fresh Food Delivered To Your Door</p>
+ <div class="logo">🍔 SONIC FOOD</div>
+ <div>
+  <span id="headerUser"></span>
+  <button id="logout">Logout</button>
+ </div>
 </header>
 
-<div id="userBar" class="hidden">
-  <span id="loggedUser"></span>
-  <button id="logoutBtn" class="secondary small">
-    Logout
-  </button>
-</div>
+<main id="customerApp" class="hidden">
 
-<main class="container">
+ <div class="hero">
+  <h1>Delicious Food, Delivered Fast!</h1>
+  <p>Order your favourite food from SONIC FOOD.</p>
+ </div>
 
-  <!-- SEARCH -->
-  <section class="card">
-    <h2>Find Your Favourite Food</h2>
-    <input id="searchFood" type="search"
-      placeholder="Search food...">
-  </section>
+ <div class="card">
+  <h2>📍 Delivery Location</h2>
+  <input id="customerName" placeholder="Your Name">
+  <input id="customerPhone" placeholder="Mobile Number">
+  <textarea id="customerAddress" placeholder="Enter your complete delivery address"></textarea>
+  <button id="getLocation">Use My Current Location</button>
+  <p id="locationMessage" class="small"></p>
+ </div>
 
-  <!-- RESTAURANT -->
-  <section class="card">
-    <h2 id="restaurantName">SONIC FOOD Restaurant</h2>
-    <p>Order delicious food online.</p>
-  </section>
+ <section class="card">
+  <h2>🍽️ Explore Food Menu</h2>
+  <input id="searchFood" placeholder="Search food...">
+  <div id="menu" class="grid"></div>
+ </section>
 
-  <!-- MENU -->
-  <section>
-    <h2>Food Menu</h2>
-    <div id="menuList" class="menuGrid"></div>
-  </section>
+ <section class="card">
+  <h2>🛒 Your Cart</h2>
+  <div id="cart"></div>
+  <p id="foodTotal">Food Total: ₹0</p>
+  <p id="deliveryCharge">Delivery Charge: ₹25</p>
+  <h2 id="grandTotal">Total: ₹0</h2>
+ </section>
 
-  <!-- CART -->
-  <section class="card">
-    <h2>🛒 Your Cart</h2>
-    <div id="cartItems">Your cart is empty.</div>
+ <section class="card">
+  <h2>💳 Payment</h2>
+  <select id="paymentMethod">
+   <option value="COD">Cash on Delivery</option>
+  </select>
+  <p class="small">Online UPI and card payments will be added after payment gateway setup.</p>
+  <button id="placeOrder" style="width:100%">Place Order</button>
+  <p id="orderMessage"></p>
+ </section>
 
-    <p>Food Amount: ₹<span id="foodTotal">0</span></p>
-    <p>Delivery Charge: ₹<span id="deliveryCharge">25</span></p>
-
-    <div class="total">
-      Grand Total: ₹<span id="grandTotal">25</span>
-    </div>
-  </section>
-
-  <!-- CHECKOUT -->
-  <section class="card">
-    <h2>📦 Checkout</h2>
-
-    <form id="checkoutForm">
-
-      <label>Customer Name</label>
-      <input id="customerName" type="text"
-        placeholder="Enter your name" required>
-
-      <label>Mobile Number</label>
-      <input id="customerPhone" type="tel"
-        placeholder="10 digit mobile number"
-        maxlength="10" required>
-
-      <label>Delivery Address</label>
-      <textarea id="customerAddress"
-        placeholder="House number, street, area, city"
-        rows="3" required></textarea>
-
-      <button type="button" id="getLocation"
-        class="secondary">
-        📍 Use My Current Location
-      </button>
-
-      <p id="locationMessage"></p>
-
-      <label>Delivery Distance (KM)</label>
-      <input id="distanceKm" type="number"
-        min="0.1" step="0.1" value="2" required>
-
-      <small>
-        First 2 KM = ₹25. Every additional KM = ₹5.
-        Distance is currently entered manually.
-      </small>
-
-      <h3>Payment Method</h3>
-
-      <label>
-        <input type="radio" name="paymentMethod"
-          value="COD" checked style="width:auto">
-        Cash on Delivery
-      </label>
-
-      <label>
-        <input type="radio" name="paymentMethod"
-          value="UPI" style="width:auto">
-        UPI
-      </label>
-
-      <label>
-        <input type="radio" name="paymentMethod"
-          value="Credit Card" style="width:auto">
-        Credit Card
-      </label>
-
-      <label>
-        <input type="radio" name="paymentMethod"
-          value="Debit Card" style="width:auto">
-        Debit Card
-      </label>
-
-      <p id="paymentMessage" class="status">
-        Online payment gateway अभी जोड़ा नहीं गया है।
-        फिलहाल Cash on Delivery उपलब्ध है।
-      </p>
-
-      <button type="submit" id="placeOrderBtn"
-        style="width:100%">
-        Confirm COD Order
-      </button>
-
-    </form>
-  </section>
-
-  <!-- ORDER CONFIRMATION -->
-  <section id="confirmation" class="card hidden">
-    <h2>✅ Order Confirmed!</h2>
-    <p>Your Order ID:</p>
-    <h3 id="confirmedOrderId"></h3>
-    <p id="confirmedTotal"></p>
-    <button id="showOrders" class="green">
-      My Orders
-    </button>
-  </section>
-
-  <!-- MY ORDERS -->
-  <section class="card">
-    <h2>📋 My Orders</h2>
-    <div id="myOrders">No orders yet.</div>
-  </section>
-
+ <section class="card">
+  <h2>📦 My Orders</h2>
+  <div id="myOrders"></div>
+ </section>
 </main>
 
-<footer>
-  <p>© SONIC FOOD - Online Food Delivery</p>
-</footer>
+<footer>© 2026 SONIC FOOD | Food Delivery</footer>
 
 <script type="module">
-
-// FIREBASE AUTHENTICATION
-import { auth } from "./firebase.js";
+import {auth} from "./firebase.js";
 
 import {
-  RecaptchaVerifier,
-  signInWithPhoneNumber,
-  onAuthStateChanged,
-  signOut
+ GoogleAuthProvider,
+ signInWithPopup,
+ createUserWithEmailAndPassword,
+ signInWithEmailAndPassword,
+ sendPasswordResetEmail,
+ onAuthStateChanged,
+ signOut
 } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-auth.js";
 
 const $ = id => document.getElementById(id);
+let signupMode = false;
+let cart = {};
+let customerLat = null;
+let customerLng = null;
 
-let confirmationResult = null;
-let recaptchaVerifier = null;
-let currentUser = null;
-let customerLocation = null;
+const provider = new GoogleAuthProvider();
+provider.setCustomParameters({prompt:"select_account"});
 
-const sampleMenu = [
-  {id:1,name:"Veg Burger",price:80,emoji:"🍔"},
-  {id:2,name:"Cheese Pizza",price:180,emoji:"🍕"},
-  {id:3,name:"Veg Biryani",price:140,emoji:"🍛"},
-  {id:4,name:"French Fries",price:70,emoji:"🍟"},
-  {id:5,name:"Paneer Roll",price:100,emoji:"🌯"},
-  {id:6,name:"Cold Drink",price:40,emoji:"🥤"}
-];
+// GOOGLE LOGIN
+$("googleLogin").onclick = async () => {
+ $("authMessage").textContent = "Opening Google Account Selector...";
+ try {
+  await signInWithPopup(auth,provider);
+  $("authMessage").textContent = "Login Successful!";
+ } catch(e) {
+  $("authMessage").textContent = "Google Login Error: "+e.code;
+  console.error(e);
+ }
+};
 
-let menu = [];
-let cart = [];
+// LOGIN / SIGNUP TABS
+$("loginTab").onclick = () => {
+ signupMode = false;
+ $("loginTab").classList.add("active");
+ $("signupTab").classList.remove("active");
+ $("emailSubmit").textContent = "Login";
+ $("authMessage").textContent = "";
+};
 
-function getStoredMenu(){
-  try{
-    const saved = JSON.parse(
-      localStorage.getItem("sonic_food_menu")
-    );
+$("signupTab").onclick = () => {
+ signupMode = true;
+ $("signupTab").classList.add("active");
+ $("loginTab").classList.remove("active");
+ $("emailSubmit").textContent = "Create Account";
+ $("authMessage").textContent = "";
+};
 
-    if(Array.isArray(saved) && saved.length){
-      return saved.map((item,index)=>({
-        id:item.id || index+1,
-        name:item.name || item.title || "Food Item",
-        price:Number(item.price) || 0,
-        emoji:item.emoji || "🍽️"
-      }));
-    }
-  }catch(e){}
+// EMAIL LOGIN / SIGNUP
+$("emailSubmit").onclick = async () => {
+ const email = $("email").value.trim();
+ const password = $("password").value;
 
-  return sampleMenu;
-}
+ if(!email || !password) {
+  $("authMessage").textContent = "Email aur password bharein.";
+  return;
+ }
 
-menu = getStoredMenu();
-
-const restaurant = localStorage.getItem(
-  "sonic_food_restaurant"
-);
-
-if(restaurant){
-  $("restaurantName").textContent = restaurant;
-}
-
-// OTP LOGIN
-function setupRecaptcha(){
-  if(recaptchaVerifier) return;
-
-  recaptchaVerifier = new RecaptchaVerifier(
-    auth,
-    "loginRecaptcha",
-    {size:"normal"}
-  );
-}
-
-$("sendLoginOTP").addEventListener("click",async()=>{
-  const phone = $("loginPhone").value.trim();
-
-  if(!/^\+91[6-9][0-9]{9}$/.test(phone)){
-    $("loginMessage").textContent =
-      "Number +91 ke saath 10 digit ka enter karein.";
-    return;
+ try {
+  if(signupMode) {
+   await createUserWithEmailAndPassword(auth,email,password);
+  } else {
+   await signInWithEmailAndPassword(auth,email,password);
   }
+ } catch(e) {
+  $("authMessage").textContent = "Error: "+e.code;
+ }
+};
 
-  try{
-    setupRecaptcha();
+// FORGOT PASSWORD
+$("forgotPassword").onclick = async () => {
+ const email = $("email").value.trim();
+ if(!email) {
+  $("authMessage").textContent = "Pehle email enter karein.";
+  return;
+ }
+ try {
+  await sendPasswordResetEmail(auth,email);
+  $("authMessage").textContent = "Password reset email sent. Inbox check karein.";
+ } catch(e) {
+  $("authMessage").textContent = "Error: "+e.code;
+ }
+};
 
-    $("sendLoginOTP").disabled = true;
-    $("loginMessage").textContent = "OTP request bheji ja rahi hai...";
+// LOGOUT
+$("logout").onclick = async () => {
+ await signOut(auth);
+};
 
-    confirmationResult = await signInWithPhoneNumber(
-      auth,phone,recaptchaVerifier
-    );
-
-    $("loginMessage").textContent =
-      "OTP request successful. OTP enter karein.";
-
-  }catch(error){
-    $("loginMessage").textContent = error.message;
-
-    if(recaptchaVerifier){
-      recaptchaVerifier.clear();
-      recaptchaVerifier = null;
-    }
-  }finally{
-    $("sendLoginOTP").disabled = false;
-  }
-});
-
-$("verifyLoginOTP").addEventListener("click",async()=>{
-  const otp = $("loginOTP").value.trim();
-
-  if(!confirmationResult){
-    $("loginMessage").textContent =
-      "Pehle Send OTP dabayein.";
-    return;
-  }
-
-  if(!/^[0-9]{6}$/.test(otp)){
-    $("loginMessage").textContent =
-      "6 digit OTP enter karein.";
-    return;
-  }
-
-  try{
-    $("verifyLoginOTP").disabled = true;
-    await confirmationResult.confirm(otp);
-    $("loginMessage").textContent = "Login Successful!";
-  }catch(error){
-    $("loginMessage").textContent =
-      "OTP Error: " + error.message;
-  }finally{
-    $("verifyLoginOTP").disabled = false;
-  }
-});
-
-onAuthStateChanged(auth,user=>{
-  currentUser = user;
-
-  if(user){
-    $("loginScreen").classList.add("hidden");
-    $("userBar").classList.remove("hidden");
-
-    $("loggedUser").textContent =
-      "Logged in: " + user.phoneNumber;
-
-    $("customerPhone").value =
-      user.phoneNumber.replace("+91","");
-
-    loadMyOrders();
-  }else{
-    $("loginScreen").classList.remove("hidden");
-    $("userBar").classList.add("hidden");
-  }
-});
-
-$("logoutBtn").addEventListener("click",async()=>{
-  await signOut(auth);
-  location.reload();
+// AUTH STATE
+onAuthStateChanged(auth,user => {
+ if(user) {
+  $("loginPage").classList.add("hidden");
+  $("customerApp").classList.remove("hidden");
+  $("headerUser").textContent = user.displayName || user.email;
+  $("customerPhone").value = user.phoneNumber || "";
+  showOrders();
+ } else {
+  $("loginPage").classList.remove("hidden");
+  $("customerApp").classList.add("hidden");
+ }
 });
 
 // MENU
-function renderMenu(search=""){
-  const list = $("menuList");
-  list.innerHTML = "";
+const defaultMenu = [
+ {id:1,name:"Veg Burger",price:80,emoji:"🍔"},
+ {id:2,name:"Paneer Pizza",price:180,emoji:"🍕"},
+ {id:3,name:"Veg Biryani",price:120,emoji:"🍛"},
+ {id:4,name:"French Fries",price:70,emoji:"🍟"},
+ {id:5,name:"Cold Drink",price:40,emoji:"🥤"},
+ {id:6,name:"Paneer Roll",price:100,emoji:"🌯"}
+];
 
-  const filtered = menu.filter(item=>
-    item.name.toLowerCase().includes(search.toLowerCase())
-  );
+let menuItems = JSON.parse(localStorage.getItem("sonic_food_menu") || "null");
+if(!Array.isArray(menuItems) || !menuItems.length) menuItems = defaultMenu;
 
-  if(!filtered.length){
-    list.innerHTML = "<p>No food found.</p>";
-    return;
-  }
+function showMenu(search="") {
+ $("menu").innerHTML = "";
 
-  filtered.forEach(item=>{
-    const div = document.createElement("div");
-    div.className = "food";
+ menuItems.filter(item =>
+  String(item.name).toLowerCase().includes(search.toLowerCase())
+ ).forEach(item => {
+  const div = document.createElement("div");
+  div.className = "card";
 
-    const emoji = document.createElement("div");
-    emoji.className = "emoji";
-    emoji.textContent = item.emoji;
+  const title = document.createElement("h3");
+  title.textContent = (item.emoji || "🍽️")+" "+item.name;
 
-    const title = document.createElement("h3");
-    title.textContent = item.name;
+  const price = document.createElement("p");
+  price.className = "price";
+  price.textContent = "₹"+item.price;
 
-    const price = document.createElement("p");
-    price.className = "price";
-    price.textContent = "₹" + item.price;
-
-    const button = document.createElement("button");
-    button.textContent = "Add to Cart";
-    button.addEventListener("click",()=>addToCart(item));
-
-    div.append(emoji,title,price,button);
-    list.appendChild(div);
-  });
-}
-
-$("searchFood").addEventListener("input",e=>{
-  renderMenu(e.target.value);
-});
-
-renderMenu();
-
-// CART
-function addToCart(item){
-  const existing = cart.find(x=>x.id===item.id);
-
-  if(existing){
-    existing.quantity++;
-  }else{
-    cart.push({...item,quantity:1});
-  }
-
-  renderCart();
-}
-
-function foodAmount(){
-  return cart.reduce(
-    (sum,item)=>sum+item.price*item.quantity,0
-  );
-}
-
-function calculateDeliveryCharge(){
-  const distance = Math.max(
-    0,Number($("distanceKm").value)||0
-  );
-
-  if(distance<=0) return 0;
-  if(distance<=2) return 25;
-
-  // Each additional started KM costs ₹5.
-  return 25 + Math.ceil(distance-2)*5;
-}
-
-function renderCart(){
-  const container = $("cartItems");
-  container.innerHTML = "";
-
-  if(!cart.length){
-    container.textContent = "Your cart is empty.";
-  }
-
-  cart.forEach(item=>{
-    const row = document.createElement("div");
-    row.className = "cartItem";
-
-    const info = document.createElement("div");
-    info.textContent =
-      item.name + " × " + item.quantity +
-      " = ₹" + item.price*item.quantity;
-
-    const controls = document.createElement("div");
-
-    const minus = document.createElement("button");
-    minus.className = "small secondary";
-    minus.textContent = "−";
-    minus.onclick = ()=>changeQuantity(item.id,-1);
-
-    const plus = document.createElement("button");
-    plus.className = "small";
-    plus.textContent = "+";
-    plus.onclick = ()=>changeQuantity(item.id,1);
-
-    controls.append(minus,plus);
-    row.append(info,controls);
-    container.appendChild(row);
-  });
-
-  updateTotals();
-}
-
-function changeQuantity(id,change){
-  const item = cart.find(x=>x.id===id);
-  if(!item) return;
-
-  item.quantity += change;
-
-  if(item.quantity<=0){
-    cart = cart.filter(x=>x.id!==id);
-  }
-
-  renderCart();
-}
-
-function updateTotals(){
-  const food = foodAmount();
-  const delivery = calculateDeliveryCharge();
-
-  $("foodTotal").textContent = food;
-  $("deliveryCharge").textContent = delivery;
-  $("grandTotal").textContent = food+delivery;
-}
-
-$("distanceKm").addEventListener("input",updateTotals);
-
-// GPS LOCATION
-$("getLocation").addEventListener("click",()=>{
-  if(!navigator.geolocation){
-    $("locationMessage").textContent =
-      "Your browser does not support GPS.";
-    return;
-  }
-
-  $("locationMessage").textContent =
-    "Getting your location...";
-
-  navigator.geolocation.getCurrentPosition(
-    position=>{
-      customerLocation = {
-        lat:position.coords.latitude,
-        lng:position.coords.longitude
-      };
-
-      $("locationMessage").textContent =
-        "Location received successfully.";
-
-      if(!$("customerAddress").value.trim()){
-        $("customerAddress").value =
-          "GPS Location: " +
-          customerLocation.lat.toFixed(6) + ", " +
-          customerLocation.lng.toFixed(6);
-      }
-    },
-    error=>{
-      $("locationMessage").textContent =
-        "Location permission nahi mili. GPS enable karein ya address manually enter karein.";
-    },
-    {enableHighAccuracy:true,timeout:15000}
-  );
-});
-
-// PAYMENT METHOD
-document.querySelectorAll(
-  'input[name="paymentMethod"]'
-).forEach(radio=>{
-  radio.addEventListener("change",()=>{
-    const method = document.querySelector(
-      'input[name="paymentMethod"]:checked'
-    ).value;
-
-    if(method==="COD"){
-      $("paymentMessage").textContent =
-        "Cash on Delivery available hai.";
-      $("placeOrderBtn").textContent =
-        "Confirm COD Order";
-      $("placeOrderBtn").disabled = false;
-    }else{
-      $("paymentMessage").textContent =
-        "Real " + method +
-        " payment ke liye payment gateway integration zaroori hai. Abhi online payment available nahi hai.";
-      $("placeOrderBtn").textContent =
-        "Online Payment Not Available";
-      $("placeOrderBtn").disabled = true;
-    }
-  });
-});
-
-// PLACE ORDER
-$("checkoutForm").addEventListener("submit",event=>{
-  event.preventDefault();
-
-  if(!currentUser){
-    $("loginScreen").classList.remove("hidden");
-    alert("Please login first.");
-    return;
-  }
-
-  if(!cart.length){
-    alert("Please add food to your cart.");
-    return;
-  }
-
-  const name = $("customerName").value.trim();
-  const phone = $("customerPhone").value.trim();
-  const address = $("customerAddress").value.trim();
-  const method = document.querySelector(
-    'input[name="paymentMethod"]:checked'
-  ).value;
-
-  if(!name || !/^[0-9]{10}$/.test(phone) || !address){
-    alert("Please enter correct customer details.");
-    return;
-  }
-
-  if(method!=="COD"){
-    alert("Online payment gateway abhi available nahi hai.");
-    return;
-  }
-
-  const food = foodAmount();
-  const delivery = calculateDeliveryCharge();
-  const total = food+delivery;
-
-  const order = {
-    id:"SF"+Date.now(),
-    customer:name,
-    phone:currentUser.phoneNumber,
-    customerUid:currentUser.uid,
-    address:address,
-    customerLocation:customerLocation,
-    distanceKm:Number($("distanceKm").value),
-    items:cart.map(item=>({
-      name:item.name,
-      price:item.price,
-      quantity:item.quantity
-    })),
-    foodTotal:food,
-    deliveryCharge:delivery,
-    total:total,
-    status:"Available",
-    partner:"",
-    paymentMethod:"COD",
-    paymentStatus:"Pay on Delivery",
-    createdAt:new Date().toLocaleString()
+  const btn = document.createElement("button");
+  btn.textContent = "Add to Cart";
+  btn.onclick = () => {
+   cart[item.id] = (cart[item.id] || 0)+1;
+   showCart();
   };
 
-  try{
-    const orders = JSON.parse(
-      localStorage.getItem("sonic_food_orders")||"[]"
-    );
+  div.append(title,price,btn);
+  $("menu").append(div);
+ });
+}
 
-    orders.push(order);
+$("searchFood").oninput = e => showMenu(e.target.value);
 
-    localStorage.setItem(
-      "sonic_food_orders",JSON.stringify(orders)
-    );
+// CART
+function showCart() {
+ $("cart").innerHTML = "";
+ let total = 0;
 
-    $("confirmedOrderId").textContent = order.id;
-    $("confirmedTotal").textContent =
-      "Total Amount: ₹"+total;
+ menuItems.forEach(item => {
+  const qty = cart[item.id] || 0;
+  if(qty > 0) {
+   total += Number(item.price)*qty;
 
-    $("confirmation").classList.remove("hidden");
+   const row = document.createElement("div");
+   row.className = "food card";
 
-    cart=[];
-    renderCart();
-    loadMyOrders();
+   const name = document.createElement("span");
+   name.textContent = item.name+" × "+qty+" = ₹"+(item.price*qty);
 
-    $("confirmation").scrollIntoView({
-      behavior:"smooth"
-    });
+   const minus = document.createElement("button");
+   minus.textContent = "-";
+   minus.onclick = () => {
+    cart[item.id]--;
+    if(cart[item.id] <= 0) delete cart[item.id];
+    showCart();
+   };
 
-  }catch(error){
-    alert("Order save nahi hua: "+error.message);
+   const plus = document.createElement("button");
+   plus.textContent = "+";
+   plus.onclick = () => {
+    cart[item.id]++;
+    showCart();
+   };
+
+   row.append(name,minus,plus);
+   $("cart").append(row);
   }
-});
+ });
+
+ $("foodTotal").textContent = "Food Total: ₹"+total;
+ updateTotal();
+}
+
+function updateTotal() {
+ const subtotal = menuItems.reduce((sum,item) =>
+  sum+Number(item.price)*(cart[item.id]||0),0);
+
+ const km = Number(customerDistance()) || 0;
+ const delivery = km <= 2 ? 25 : 25+Math.ceil(km-2)*5;
+
+ $("deliveryCharge").textContent = "Delivery Charge: ₹"+delivery;
+ $("grandTotal").textContent = "Total: ₹"+(subtotal+delivery);
+ return {subtotal,delivery,total:subtotal+delivery};
+}
+
+function customerDistance() {
+ return Number(localStorage.getItem("sonic_customer_distance") || 0);
+}
+
+// LOCATION
+$("getLocation").onclick = () => {
+ if(!navigator.geolocation) {
+  $("locationMessage").textContent = "Location support available nahi hai.";
+  return;
+ }
+
+ navigator.geolocation.getCurrentPosition(pos => {
+  customerLat = pos.coords.latitude;
+  customerLng = pos.coords.longitude;
+  $("locationMessage").textContent = "Location captured successfully.";
+
+  localStorage.setItem("sonic_customer_lat",customerLat);
+  localStorage.setItem("sonic_customer_lng",customerLng);
+ },err => {
+  $("locationMessage").textContent = "Location permission allow karein ya address manually bharein.";
+ },{enableHighAccuracy:true,timeout:15000});
+};
+
+// DISTANCE NOTE: This version asks for distance manually.
+const distanceInput = document.createElement("input");
+distanceInput.type = "number";
+distanceInput.min = "0.1";
+distanceInput.step = "0.1";
+distanceInput.placeholder = "Delivery distance in KM";
+distanceInput.id = "distanceInput";
+$("locationMessage").after(distanceInput);
+
+distanceInput.oninput = () => {
+ localStorage.setItem("sonic_customer_distance",distanceInput.value);
+ updateTotal();
+};
+
+// ORDER
+$("placeOrder").onclick = () => {
+ const user = auth.currentUser;
+ if(!user) return;
+
+ const name = $("customerName").value.trim();
+ const phone = $("customerPhone").value.trim();
+ const address = $("customerAddress").value.trim();
+
+ const items = menuItems.filter(i => cart[i.id]>0).map(i => ({
+  name:i.name,price:Number(i.price),quantity:cart[i.id]
+ }));
+
+ if(!items.length) {
+  $("orderMessage").textContent = "Pehle food cart mein add karein.";
+  return;
+ }
+
+ if(!name || !phone || !address || !distanceInput.value || Number(distanceInput.value)<=0) {
+  $("orderMessage").textContent = "Name, mobile, address aur distance bharein.";
+  return;
+ }
+
+ const totals = updateTotal();
+ const orders = JSON.parse(localStorage.getItem("sonic_food_orders") || "[]");
+
+ const order = {
+  id:"SF"+Date.now(),
+  customerUid:user.uid,
+  customerEmail:user.email,
+  customerName:name,
+  customerPhone:phone,
+  address,
+  distance:Number(distanceInput.value),
+  latitude:customerLat,
+  longitude:customerLng,
+  items,
+  foodTotal:totals.subtotal,
+  deliveryCharge:totals.delivery,
+  total:totals.total,
+  payment:"COD",
+  status:"New Order",
+  createdAt:new Date().toISOString()
+ };
+
+ orders.push(order);
+ localStorage.setItem("sonic_food_orders",JSON.stringify(orders));
+
+ cart = {};
+ showCart();
+ showOrders();
+ $("orderMessage").textContent = "Order Confirmed! Your Order ID: "+order.id;
+};
 
 // MY ORDERS
-function loadMyOrders(){
-  if(!currentUser) return;
+function showOrders() {
+ const user = auth.currentUser;
+ if(!user) return;
 
-  let orders=[];
+ const orders = JSON.parse(localStorage.getItem("sonic_food_orders") || "[]");
+ const mine = orders.filter(o => o.customerUid === user.uid);
 
-  try{
-    orders=JSON.parse(
-      localStorage.getItem("sonic_food_orders")||"[]"
-    );
-  }catch(e){}
+ $("myOrders").innerHTML = "";
 
-  const mine=orders.filter(order=>
-    order.customerUid===currentUser.uid
-  );
+ if(!mine.length) {
+  $("myOrders").textContent = "No orders yet.";
+  return;
+ }
 
-  const container=$("myOrders");
-  container.innerHTML="";
-
-  if(!mine.length){
-    container.textContent="No orders yet.";
-    return;
-  }
-
-  mine.slice().reverse().forEach(order=>{
-    const div=document.createElement("div");
-    div.className="card";
-
-    const heading=document.createElement("h3");
-    heading.textContent="Order "+order.id;
-
-    const status=document.createElement("p");
-    status.textContent="Status: "+order.status;
-
-    const amount=document.createElement("p");
-    amount.textContent="Total: ₹"+order.total;
-
-    const date=document.createElement("p");
-    date.textContent="Date: "+order.createdAt;
-
-    const address=document.createElement("p");
-    address.textContent="Address: "+order.address;
-
-    div.append(heading,status,amount,date,address);
-    container.appendChild(div);
-  });
+ mine.slice().reverse().forEach(order => {
+  const div = document.createElement("div");
+  div.className = "card";
+  div.textContent =
+   "Order ID: "+order.id+
+   " | Total: ₹"+order.total+
+   " | Status: "+order.status;
+  $("myOrders").append(div);
+ });
 }
 
-$("showOrders").addEventListener("click",()=>{
-  $("myOrders").scrollIntoView({behavior:"smooth"});
-});
+showMenu();
+showCart();
 
-// SERVICE WORKER
-if("serviceWorker" in navigator){
-  window.addEventListener("load",()=>{
-    navigator.serviceWorker.register("./sw.js")
-      .catch(error=>console.log("SW Error:",error));
-  });
+if("serviceWorker" in navigator && location.protocol.startsWith("http")) {
+ navigator.serviceWorker.register("./sw.js").catch(console.error);
 }
-
-renderCart();
-
 </script>
 </body>
 </html>
