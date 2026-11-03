@@ -1,0 +1,168 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SONIC FOOD Merchant Dashboard</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial;background:#f5f5f5;color:#222}
+header{background:#222;color:white;padding:20px}
+header h2{margin:0;color:#ff633e}
+.container{max-width:900px;margin:25px auto;padding:15px}
+.card{background:white;padding:22px;border-radius:12px;margin-bottom:20px;box-shadow:0 2px 8px #ddd}
+input,select{width:100%;padding:13px;margin:9px 0;border:1px solid #ddd;border-radius:7px}
+button{background:#f04b25;color:white;border:0;padding:12px 18px;border-radius:7px;cursor:pointer}
+.delete{background:#c62828;padding:8px 12px}
+.item{display:flex;justify-content:space-between;align-items:center;gap:12px;border-bottom:1px solid #eee;padding:13px 0}
+.item p{margin:5px 0;color:#666}
+.stats{display:flex;gap:12px;flex-wrap:wrap}
+.stat{background:#fff0e9;padding:17px;border-radius:9px;flex:1;min-width:130px}
+.stat strong{font-size:24px;color:#e94b25}
+</style>
+</head>
+<body>
+
+<header>
+<h2>SONIC FOOD</h2>
+<p>Restaurant Merchant Dashboard</p>
+</header>
+
+<div class="container">
+
+<div class="card">
+<h2>Welcome, Restaurant Owner!</h2>
+<label>Restaurant Name</label>
+<input id="restaurant" placeholder="Enter restaurant name">
+<button onclick="saveRestaurant()">Save Restaurant</button>
+<p id="restaurantMessage"></p>
+</div>
+
+<div class="stats">
+<div class="stat">
+<p>Total Food Items</p>
+<strong id="count">0</strong>
+</div>
+<div class="stat">
+<p>Restaurant Status</p>
+<strong style="font-size:18px">Active</strong>
+</div>
+</div>
+
+<div class="card">
+<h2>➕ Add New Food</h2>
+<form id="foodForm">
+<label>Food Name</label>
+<input id="foodName" placeholder="Example: Paneer Pizza" required>
+
+<label>Category</label>
+<select id="category">
+<option>Pizza</option>
+<option>Burger</option>
+<option>Biryani</option>
+<option>Drinks</option>
+<option>Other</option>
+</select>
+
+<label>Food Price (₹)</label>
+<input id="price" type="number" min="1" placeholder="Enter price" required>
+
+<button type="submit">Add Food Item</button>
+</form>
+<p id="message"></p>
+</div>
+
+<div class="card">
+<h2>🍔 Your Food Menu</h2>
+<div id="menu"></div>
+</div>
+
+</div>
+
+<script>
+const KEY="sonic_food_menu";
+const NAMEKEY="sonic_food_restaurant";
+
+let foods=JSON.parse(localStorage.getItem(KEY)||"[]");
+
+function safe(text){
+ return String(text).replace(/[&<>"']/g,c=>({
+ "&":"&amp;","<":"&lt;",">":"&gt;",
+ '"':"&quot;","'":"&#39;"
+ })[c]);
+}
+
+function save(){
+ localStorage.setItem(KEY,JSON.stringify(foods));
+}
+
+function saveRestaurant(){
+ const name=document.getElementById("restaurant").value.trim();
+ if(!name){
+  alert("Enter restaurant name");
+  return;
+ }
+ localStorage.setItem(NAMEKEY,name);
+ document.getElementById("restaurantMessage").textContent=
+ "Restaurant name saved successfully!";
+}
+
+document.getElementById("restaurant").value=
+localStorage.getItem(NAMEKEY)||"";
+
+document.getElementById("foodForm").addEventListener("submit",function(e){
+ e.preventDefault();
+
+ const name=document.getElementById("foodName").value.trim();
+ const category=document.getElementById("category").value;
+ const price=Number(document.getElementById("price").value);
+
+ if(!name||!Number.isFinite(price)||price<=0){
+  alert("Please enter valid food details");
+  return;
+ }
+
+ foods.push({
+  id:Date.now(),
+  name:name,
+  category:category,
+  price:price
+ });
+
+ save();
+ render();
+
+ document.getElementById("foodForm").reset();
+ document.getElementById("message").textContent=
+ "Food item added successfully!";
+});
+
+function removeFood(id){
+ if(!confirm("Delete this food item?"))return;
+ foods=foods.filter(f=>f.id!==id);
+ save();
+ render();
+}
+
+function render(){
+ document.getElementById("count").textContent=foods.length;
+
+ document.getElementById("menu").innerHTML=foods.length?
+ foods.map(f=>`
+ <div class="item">
+  <div>
+   <strong>${safe(f.name)}</strong>
+   <p>${safe(f.category)} | ₹${f.price}</p>
+  </div>
+  <button class="delete" onclick="removeFood(${f.id})">
+   Delete
+  </button>
+ </div>
+ `).join(""):"No food items added yet.";
+}
+
+render();
+</script>
+</body>
+</html>

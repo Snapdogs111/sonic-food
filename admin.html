@@ -1,0 +1,241 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SONIC FOOD Admin Panel</title>
+
+<style>
+*{box-sizing:border-box;font-family:Arial,sans-serif}
+body{margin:0;background:#f4f6f9;color:#222}
+header{background:#e63946;color:white;padding:20px;text-align:center}
+.container{width:94%;max-width:1200px;margin:25px auto}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px}
+.stat,.panel{background:white;padding:18px;border-radius:12px;box-shadow:0 2px 8px #0001}
+.stat h3{font-size:14px;color:#666}
+.stat strong{font-size:25px;color:#e63946}
+h2{margin-top:25px}
+.controls{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:15px}
+input,select{padding:11px;border:1px solid #ccc;border-radius:7px}
+button{padding:11px 15px;border:0;border-radius:7px;background:#e63946;color:white;cursor:pointer}
+.order{border:1px solid #ddd;padding:16px;border-radius:10px;margin:12px 0;line-height:1.8;overflow-wrap:anywhere}
+.items{background:#f7f7f7;padding:10px;border-radius:7px}
+.empty{color:#777}
+.food-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+.food{padding:12px;border:1px solid #ddd;border-radius:8px}
+.green{color:green;font-weight:bold}
+.orange{color:#bd7100;font-weight:bold}
+.red{color:#c62828;font-weight:bold}
+</style>
+</head>
+
+<body>
+<header>
+<h1>🍔 SONIC FOOD</h1>
+<p>Admin Control Panel</p>
+</header>
+
+<div class="container">
+
+<h2>Dashboard</h2>
+<div class="stats">
+<div class="stat"><h3>Total Orders</h3><strong id="total">0</strong></div>
+<div class="stat"><h3>Active Orders</h3><strong id="active">0</strong></div>
+<div class="stat"><h3>Delivered Orders</h3><strong id="delivered">0</strong></div>
+<div class="stat"><h3>Delivered Sales</h3><strong id="sales">₹0</strong></div>
+<div class="stat"><h3>Food Items</h3><strong id="foods">0</strong></div>
+</div>
+
+<h2>Restaurant</h2>
+<div class="panel">
+<strong id="restaurant">SONIC FOOD Restaurant</strong>
+</div>
+
+<h2>Order & Payment Management</h2>
+<div class="panel">
+<div class="controls">
+<input id="search" placeholder="Search Order / Customer / Phone" oninput="renderOrders()">
+<select id="filter" onchange="renderOrders()">
+<option value="All">All Orders</option>
+<option>Available</option>
+<option>Accepted</option>
+<option>Picked Up</option>
+<option>Delivered</option>
+<option>Cancelled</option>
+</select>
+<button onclick="refresh()">Refresh</button>
+</div>
+<div id="orderList"></div>
+</div>
+
+<h2>Food Menu</h2>
+<div class="panel">
+<div id="foodList" class="food-grid"></div>
+</div>
+
+</div>
+
+<script>
+const ORDER_KEY="sonic_food_orders";
+const MENU_KEY="sonic_food_menu";
+const NAME_KEY="sonic_food_restaurant";
+
+function orders(){
+ try{
+  const d=JSON.parse(localStorage.getItem(ORDER_KEY)||"[]");
+  return Array.isArray(d)?d:[];
+ }catch(e){return [];}
+}
+
+function menu(){
+ try{
+  const d=JSON.parse(localStorage.getItem(MENU_KEY)||"[]");
+  return Array.isArray(d)?d:[];
+ }catch(e){return [];}
+}
+
+function safe(v){
+ return String(v??"").replace(/[&<>"']/g,c=>({
+ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+ })[c]);
+}
+
+function money(v){
+ return "₹"+(Number(v)||0).toLocaleString("en-IN");
+}
+
+function refresh(){
+ const o=orders();
+ const f=menu();
+ const done=o.filter(x=>x.status==="Delivered");
+ const active=o.filter(x=>["Available","Accepted","Picked Up"].includes(x.status));
+ const total=done.reduce((s,x)=>s+(Number(x.total)||0),0);
+
+ document.getElementById("total").textContent=o.length;
+ document.getElementById("active").textContent=active.length;
+ document.getElementById("delivered").textContent=done.length;
+ document.getElementById("sales").textContent=money(total);
+ document.getElementById("foods").textContent=f.length;
+ document.getElementById("restaurant").textContent=
+ localStorage.getItem(NAME_KEY)||"SONIC FOOD Restaurant";
+
+ renderOrders();
+ renderFoods();
+}
+
+function renderOrders(){
+ const q=document.getElementById("search").value.toLowerCase().trim();
+ const filter=document.getElementById("filter").value;
+
+ const result=orders().filter(o=>{
+  const match=[o.id,o.customer,o.phone].some(v=>
+   String(v||"").toLowerCase().includes(q)
+  );
+  return match&&(filter==="All"||o.status===filter);
+ });
+
+ const list=document.getElementById("orderList");
+
+ if(!result.length){
+  list.innerHTML='<p class="empty">No orders found.</p>';
+  return;
+ }
+
+ list.innerHTML=result.map(o=>{
+  const items=Array.isArray(o.items)?o.items:[];
+  const itemHTML=items.map(i=>
+   `${safe(i.name)} × ${Number(i.quantity)||1} — ${money((Number(i.price)||0)*(Number(i.quantity)||1))}`
+  ).join("<br>");
+
+  const status=o.status||"Available";
+  const payment=o.paymentMethod||"Not Selected";
+  const paymentStatus=o.paymentStatus||"Not Updated";
+  const date=o.createdAt?new Date(o.createdAt).toLocaleString("en-IN"):"Not available";
+
+  const paymentClass=paymentStatus==="Paid"?"green":
+   paymentStatus==="Pay on Delivery"?"orange":"red";
+
+  return `
+  <div class="order">
+   <b>Order ID:</b> ${safe(o.id)}<br>
+   <b>Customer:</b> ${safe(o.customer||"Not provided")}<br>
+   <b>Phone:</b> ${safe(o.phone||"Not provided")}<br>
+   <b>Address:</b> ${safe(o.address||"Not provided")}<br>
+   <b>Delivery Partner:</b> ${safe(o.partner||"Not assigned")}<br>
+   <b>Order Time:</b> ${safe(date)}<br>
+
+   <div class="items">
+    <b>Food Items:</b><br>${itemHTML||"No items"}
+   </div>
+
+   <b>Total:</b> ${money(o.total)}<br>
+   <b>Order Status:</b> ${safe(status)}<br>
+   <b>Payment Method:</b> ${safe(payment)}<br>
+   <b>Payment Status:</b>
+   <span class="${paymentClass}">${safe(paymentStatus)}</span>
+
+   <div class="controls" style="margin-top:12px">
+    <select id="status-${safe(o.id)}">
+     ${["Available","Accepted","Picked Up","Delivered","Cancelled"].map(s=>
+      `<option value="${s}" ${status===s?"selected":""}>${s}</option>`
+     ).join("")}
+    </select>
+    <button onclick="updateStatus('${safe(o.id)}')">Save Status</button>
+   </div>
+
+   <div class="controls">
+    <select id="payment-${safe(o.id)}">
+     ${["Not Updated","Pay on Delivery","Demo - Not Paid","Paid","Failed","Refunded"].map(s=>
+      `<option value="${s}" ${paymentStatus===s?"selected":""}>${s}</option>`
+     ).join("")}
+    </select>
+    <button onclick="updatePayment('${safe(o.id)}')">Save Payment</button>
+   </div>
+  </div>`;
+ }).join("");
+}
+
+function updateStatus(id){
+ const all=orders();
+ const index=all.findIndex(o=>String(o.id)===String(id));
+ if(index<0)return alert("Order not found");
+
+ all[index].status=document.getElementById("status-"+id).value;
+ localStorage.setItem(ORDER_KEY,JSON.stringify(all));
+ alert("Order status updated!");
+ refresh();
+}
+
+function updatePayment(id){
+ const all=orders();
+ const index=all.findIndex(o=>String(o.id)===String(id));
+ if(index<0)return alert("Order not found");
+
+ const value=document.getElementById("payment-"+id).value;
+ all[index].paymentStatus=value;
+ localStorage.setItem(ORDER_KEY,JSON.stringify(all));
+ alert("Payment status updated!");
+ refresh();
+}
+
+function renderFoods(){
+ const f=menu();
+ document.getElementById("foodList").innerHTML=f.length?
+ f.map(x=>`
+  <div class="food">
+   <b>${safe(x.name||"Food Item")}</b><br>
+   ${safe(x.category||"")}<br>
+   ${money(x.price)}
+  </div>
+ `).join(""):'<p class="empty">No food items available.</p>';
+}
+
+window.addEventListener("storage",e=>{
+ if([ORDER_KEY,MENU_KEY,NAME_KEY].includes(e.key))refresh();
+});
+
+refresh();
+</script>
+</body>
+</html>

@@ -1,0 +1,156 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SONIC FOOD - Track Order</title>
+
+<style>
+*{box-sizing:border-box;font-family:Arial,sans-serif}
+body{margin:0;background:#f4f6f9;color:#222}
+header{background:#e63946;color:white;text-align:center;padding:22px}
+.container{max-width:650px;width:92%;margin:30px auto}
+.card{background:white;padding:22px;border-radius:12px;box-shadow:0 2px 10px #0001;margin-bottom:18px}
+h2{margin-top:0}
+input{width:100%;padding:13px;border:1px solid #ccc;border-radius:7px;font-size:16px;margin:10px 0}
+button{background:#e63946;color:white;border:0;padding:13px 18px;border-radius:7px;cursor:pointer;font-weight:bold}
+button:hover{opacity:.9}
+.result{display:none}
+.step{display:flex;gap:14px;align-items:center;padding:15px 0;border-bottom:1px solid #eee}
+.circle{width:30px;height:30px;border-radius:50%;background:#ddd;display:grid;place-items:center;color:#555;flex-shrink:0}
+.step.done .circle{background:#168b50;color:white}
+.step.done b{color:#168b50}
+.small{color:#666;font-size:13px;line-height:1.5}
+.error{color:#c62828;font-weight:bold}
+.success{color:#168b50;font-weight:bold}
+</style>
+</head>
+
+<body>
+<header>
+<h1>🍔 SONIC FOOD</h1>
+<p>Track Your Food Order</p>
+</header>
+
+<div class="container">
+<div class="card">
+<h2>Track Your Order</h2>
+<p>Apna Order ID enter karein.</p>
+<input id="orderId" placeholder="Example: SF123456789">
+<button onclick="trackOrder()">Track Order</button>
+<p id="message"></p>
+</div>
+
+<div class="card result" id="result">
+<h2>Order Details</h2>
+<div id="details"></div>
+
+<h3>Order Progress</h3>
+<div id="progress"></div>
+</div>
+</div>
+
+<script>
+const ORDER_KEY = "sonic_food_orders";
+
+function getOrders(){
+    try{
+        const data = JSON.parse(localStorage.getItem(ORDER_KEY) || "[]");
+        return Array.isArray(data) ? data : [];
+    }catch(e){
+        return [];
+    }
+}
+
+function safe(value){
+    return String(value ?? "").replace(/[&<>"']/g, c => ({
+        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+    })[c]);
+}
+
+function money(value){
+    return "₹" + (Number(value)||0).toLocaleString("en-IN");
+}
+
+function trackOrder(){
+    const id = document.getElementById("orderId").value.trim();
+    const message = document.getElementById("message");
+    const result = document.getElementById("result");
+
+    result.style.display = "none";
+    message.className = "";
+
+    if(!id){
+        message.textContent = "Please Order ID enter karein.";
+        message.className = "error";
+        return;
+    }
+
+    const order = getOrders().find(o =>
+        String(o.id).toLowerCase() === id.toLowerCase()
+    );
+
+    if(!order){
+        message.textContent = "Order nahi mila. Sahi Order ID check karein.";
+        message.className = "error";
+        return;
+    }
+
+    message.textContent = "Order found!";
+    message.className = "success";
+    result.style.display = "block";
+
+    const items = Array.isArray(order.items) ? order.items : [];
+    const itemText = items.map(item =>
+        `${safe(item.name)} × ${Number(item.quantity)||1}`
+    ).join("<br>");
+
+    document.getElementById("details").innerHTML = `
+        <p><b>Order ID:</b> ${safe(order.id)}</p>
+        <p><b>Customer:</b> ${safe(order.customer || "")}</p>
+        <p><b>Food:</b><br>${itemText}</p>
+        <p><b>Total:</b> ${money(order.total)}</p>
+        <p><b>Delivery Address:</b> ${safe(order.address || "Not available")}</p>
+        <p><b>Delivery Partner:</b> ${safe(order.partner || "Not assigned")}</p>
+    `;
+
+    const status = order.status || "Available";
+
+    const steps = [
+        {name:"Order Received", statuses:["Available","Accepted","Picked Up","Delivered"]},
+        {name:"Order Accepted", statuses:["Accepted","Picked Up","Delivered"]},
+        {name:"Picked Up", statuses:["Picked Up","Delivered"]},
+        {name:"Delivered", statuses:["Delivered"]}
+    ];
+
+    let currentIndex = status === "Available" ? 0 :
+        status === "Accepted" ? 1 :
+        status === "Picked Up" ? 2 :
+        status === "Delivered" ? 3 : -1;
+
+    let progressHTML = "";
+
+    if(status === "Cancelled"){
+        progressHTML = '<p class="error">This order has been cancelled.</p>';
+    }else{
+        progressHTML = steps.map((step,index) => `
+            <div class="step ${index <= currentIndex ? "done" : ""}">
+                <div class="circle">${index <= currentIndex ? "✓" : index+1}</div>
+                <div><b>${step.name}</b></div>
+            </div>
+        `).join("");
+    }
+
+    document.getElementById("progress").innerHTML = progressHTML;
+}
+
+window.addEventListener("storage", function(e){
+    if(e.key === ORDER_KEY){
+        const id = document.getElementById("orderId").value.trim();
+        if(id) trackOrder();
+    }
+});
+</script>
+</body>
+</html>

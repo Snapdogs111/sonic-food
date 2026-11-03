@@ -1,0 +1,365 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SONIC FOOD - Delivery Partner</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ font-family:Arial,sans-serif;
+ background:#f4f5f7;
+ color:#222;
+}
+header{
+ background:#202020;
+ color:white;
+ padding:20px 6%;
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ flex-wrap:wrap;
+ gap:10px;
+}
+.logo{font-size:24px;font-weight:bold;color:#ff5937}
+.logo span{color:white}
+.container{max-width:1000px;margin:25px auto;padding:15px}
+.card{
+ background:white;
+ padding:20px;
+ border-radius:12px;
+ margin-bottom:18px;
+ box-shadow:0 2px 9px #ddd;
+}
+input{
+ width:100%;
+ padding:13px;
+ border:1px solid #ddd;
+ border-radius:7px;
+ margin:9px 0;
+}
+button{
+ border:0;
+ padding:11px 15px;
+ border-radius:7px;
+ cursor:pointer;
+ font-weight:bold;
+ background:#f04b25;
+ color:white;
+}
+button:disabled{opacity:.5;cursor:not-allowed}
+.green{background:#168343}
+.dark{background:#222}
+.red{background:#c62828}
+.stats{
+ display:grid;
+ grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+ gap:12px;
+}
+.stat{
+ background:#fff0e9;
+ padding:17px;
+ border-radius:10px;
+}
+.stat strong{font-size:25px;color:#ed4c27}
+.order{
+ background:white;
+ border:1px solid #e5e5e5;
+ border-radius:10px;
+ padding:17px;
+ margin:14px 0;
+}
+.order h3{margin-top:0}
+.status{
+ display:inline-block;
+ background:#fff0e9;
+ color:#e94b25;
+ padding:6px 10px;
+ border-radius:20px;
+ font-size:13px;
+ font-weight:bold;
+}
+.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:15px}
+.small{color:#666;font-size:14px}
+#app{display:none}
+footer{text-align:center;color:#777;padding:20px}
+</style>
+</head>
+
+<body>
+
+<header>
+ <div class="logo">SONIC <span>FOOD DELIVERY</span></div>
+ <button class="dark" onclick="logout()" id="logoutBtn"
+ style="display:none">Logout</button>
+</header>
+
+<div class="container">
+
+<section class="card" id="login">
+ <h2>🚴 Delivery Partner Login</h2>
+ <p class="small">Create your demo delivery partner profile.</p>
+
+ <label>Full Name</label>
+ <input id="partnerName" placeholder="Enter your name">
+
+ <label>Mobile Number</label>
+ <input id="partnerPhone" type="tel"
+ maxlength="10" placeholder="10 digit mobile number">
+
+ <button onclick="login()">Login / Register</button>
+ <p id="loginMessage"></p>
+</section>
+
+<section id="app">
+
+ <div class="card">
+  <h2>Welcome, <span id="welcome"></span> 👋</h2>
+  <p class="small">SONIC FOOD Delivery Partner Dashboard</p>
+ </div>
+
+ <div class="stats">
+  <div class="stat">
+   <p>Available Orders</p>
+   <strong id="availableCount">0</strong>
+  </div>
+  <div class="stat">
+   <p>My Active Orders</p>
+   <strong id="activeCount">0</strong>
+  </div>
+  <div class="stat">
+   <p>Delivered Orders</p>
+   <strong id="deliveredCount">0</strong>
+  </div>
+  <div class="stat">
+   <p>Demo Earnings</p>
+   <strong>₹<span id="earnings">0</span></strong>
+  </div>
+ </div>
+
+ <div class="card">
+  <h2>🛵 Available Orders</h2>
+  <div id="availableOrders"></div>
+ </div>
+
+ <div class="card">
+  <h2>📦 My Active Deliveries</h2>
+  <div id="activeOrders"></div>
+ </div>
+
+ <div class="card">
+  <h2>✅ Completed Deliveries</h2>
+  <div id="history"></div>
+ </div>
+
+</section>
+</div>
+
+<footer>SONIC FOOD | Delivery Partner Demo</footer>
+
+<script>
+const ORDER_KEY="sonic_food_orders";
+const PARTNER_KEY="sonic_food_partner";
+const DELIVERY_FEE=30;
+
+let partner=null;
+let orders=[];
+
+function safe(value){
+ return String(value).replace(/[&<>"']/g,c=>({
+ "&":"&amp;","<":"&lt;",">":"&gt;",
+ '"':"&quot;","'":"&#39;"
+ })[c]);
+}
+
+function readOrders(){
+ try{
+  const data=JSON.parse(localStorage.getItem(ORDER_KEY)||"[]");
+  return Array.isArray(data)?data:[];
+ }catch(e){return [];}
+}
+
+function saveOrders(){
+ localStorage.setItem(ORDER_KEY,JSON.stringify(orders));
+}
+
+function login(){
+ const name=document.getElementById("partnerName").value.trim();
+ const phone=document.getElementById("partnerPhone").value.trim();
+
+ if(name.length<2){
+  alert("Enter your full name.");
+  return;
+ }
+ if(!/^[0-9]{10}$/.test(phone)){
+  alert("Enter a valid 10-digit mobile number.");
+  return;
+ }
+
+ partner={name:name,phone:phone};
+ localStorage.setItem(PARTNER_KEY,JSON.stringify(partner));
+ showApp();
+}
+
+function showApp(){
+ document.getElementById("login").style.display="none";
+ document.getElementById("app").style.display="block";
+ document.getElementById("logoutBtn").style.display="block";
+ document.getElementById("welcome").textContent=partner.name;
+ render();
+}
+
+function logout(){
+ localStorage.removeItem(PARTNER_KEY);
+ partner=null;
+ document.getElementById("app").style.display="none";
+ document.getElementById("login").style.display="block";
+ document.getElementById("logoutBtn").style.display="none";
+}
+
+function getMyOrders(){
+ return orders.filter(o=>o.partner===partner.phone);
+}
+
+function acceptOrder(id){
+ orders=readOrders();
+ const order=orders.find(o=>o.id===id);
+
+ if(!order||order.status!=="Available"||order.partner){
+  alert("Sorry, this order is no longer available.");
+  render();
+  return;
+ }
+
+ order.partner=partner.phone;
+ order.partnerName=partner.name;
+ order.status="Accepted";
+
+ saveOrders();
+ render();
+}
+
+function pickupOrder(id){
+ orders=readOrders();
+ const order=orders.find(o=>o.id===id);
+
+ if(!order||order.partner!==partner.phone||
+ order.status!=="Accepted")return;
+
+ order.status="Picked Up";
+ saveOrders();
+ render();
+}
+
+function deliverOrder(id){
+ orders=readOrders();
+ const order=orders.find(o=>o.id===id);
+
+ if(!order||order.partner!==partner.phone||
+ order.status!=="Picked Up")return;
+
+ if(!confirm("Confirm that this order was delivered?"))return;
+
+ order.status="Delivered";
+ order.deliveredAt=new Date().toLocaleString();
+ order.deliveryFee=DELIVERY_FEE;
+
+ saveOrders();
+ render();
+}
+
+function orderHTML(o,mode){
+ const itemList=Array.isArray(o.items)?o.items:[];
+ const itemText=itemList.map(item=>
+  safe(item.name)+" × "+Number(item.quantity)
+ ).join(", ");
+
+ let buttons="";
+
+ if(mode==="available"){
+  buttons=`<button class="green"
+   onclick="acceptOrder('${safe(o.id)}')">
+   Accept Order
+  </button>`;
+ }
+
+ if(mode==="active"&&o.status==="Accepted"){
+  buttons=`<button onclick="pickupOrder('${safe(o.id)}')">
+   Confirm Food Pickup
+  </button>`;
+ }
+
+ if(mode==="active"&&o.status==="Picked Up"){
+  buttons=`<button class="green"
+   onclick="deliverOrder('${safe(o.id)}')">
+   Mark as Delivered
+  </button>`;
+ }
+
+ return `
+ <div class="order">
+  <h3>Order #${safe(o.id)}</h3>
+  <span class="status">${safe(o.status)}</span>
+  <p><b>Customer:</b> ${safe(o.customer)}</p>
+  <p><b>Phone:</b> ${safe(o.phone)}</p>
+  <p><b>Food:</b> ${itemText||"No items"}</p>
+  <p><b>Order Amount:</b> ₹${Number(o.total)||0}</p>
+  <p class="small">Order Time: ${safe(o.createdAt||"N/A")}</p>
+  ${mode==="history"?`<p><b>Demo Delivery Earning:</b> ₹${DELIVERY_FEE}</p>`:""}
+  <div class="actions">${buttons}</div>
+ </div>`;
+}
+
+function render(){
+ if(!partner)return;
+
+ orders=readOrders();
+
+ const available=orders.filter(o=>
+  o.status==="Available"&&!o.partner
+ );
+
+ const mine=getMyOrders();
+ const active=mine.filter(o=>
+  o.status==="Accepted"||o.status==="Picked Up"
+ );
+ const completed=mine.filter(o=>o.status==="Delivered");
+
+ const earnings=completed.reduce((sum,o)=>
+  sum+(Number(o.deliveryFee)||DELIVERY_FEE),0);
+
+ document.getElementById("availableCount").textContent=available.length;
+ document.getElementById("activeCount").textContent=active.length;
+ document.getElementById("deliveredCount").textContent=completed.length;
+ document.getElementById("earnings").textContent=earnings;
+
+ document.getElementById("availableOrders").innerHTML=
+ available.length?available.map(o=>orderHTML(o,"available")).join("")
+ :"No available orders right now.";
+
+ document.getElementById("activeOrders").innerHTML=
+ active.length?active.map(o=>orderHTML(o,"active")).join("")
+ :"No active deliveries.";
+
+ document.getElementById("history").innerHTML=
+ completed.length?completed.map(o=>orderHTML(o,"history")).join("")
+ :"No completed deliveries yet.";
+}
+
+window.addEventListener("storage",function(e){
+ if(e.key===ORDER_KEY)render();
+});
+
+try{
+ partner=JSON.parse(localStorage.getItem(PARTNER_KEY)||"null");
+}catch(e){partner=null;}
+
+if(partner&&partner.name&&partner.phone){
+ showApp();
+}
+</script>
+</body>
+</html>

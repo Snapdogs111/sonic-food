@@ -1,0 +1,102 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SONIC FOOD - Payment</title>
+<style>
+*{box-sizing:border-box;font-family:Arial,sans-serif}
+body{margin:0;background:#f4f6f9;color:#222}
+header{background:#e63946;color:white;text-align:center;padding:22px}
+.container{max-width:550px;width:92%;margin:30px auto}
+.card{background:white;padding:22px;border-radius:12px;box-shadow:0 2px 10px #0001}
+input{width:100%;padding:12px;border:1px solid #ccc;border-radius:7px;margin:8px 0 16px}
+label{display:block;margin:13px 0}
+button{width:100%;background:#e63946;color:white;padding:13px;border:0;border-radius:7px;font-size:16px;cursor:pointer}
+.option{border:1px solid #ddd;padding:14px;border-radius:8px;margin:12px 0}
+#message{margin-top:15px;line-height:1.5}
+</style>
+</head>
+<body>
+<header>
+<h1>🍔 SONIC FOOD</h1>
+<p>Secure Demo Checkout</p>
+</header>
+
+<div class="container">
+<div class="card">
+<h2>Payment Details</h2>
+
+<label>Order ID</label>
+<input id="orderId" placeholder="Enter your Order ID">
+
+<h3>Select Payment Method</h3>
+
+<div class="option">
+<label><input type="radio" name="payment" value="COD" checked>
+Cash on Delivery (COD)</label>
+</div>
+
+<div class="option">
+<label><input type="radio" name="payment" value="UPI">
+UPI Payment (Demo Only)</label>
+</div>
+
+<button onclick="payNow()">Confirm Payment Method</button>
+<p id="message"></p>
+</div>
+</div>
+
+<script>
+const ORDER_KEY = "sonic_food_orders";
+
+function getOrders(){
+    try{
+        const data = JSON.parse(localStorage.getItem(ORDER_KEY) || "[]");
+        return Array.isArray(data) ? data : [];
+    }catch(e){return [];}
+}
+
+function payNow(){
+    const id = document.getElementById("orderId").value.trim();
+    const method = document.querySelector('input[name="payment"]:checked').value;
+    const message = document.getElementById("message");
+
+    if(!id){
+        message.textContent = "Please enter Order ID.";
+        message.style.color = "red";
+        return;
+    }
+
+    const orders = getOrders();
+    const index = orders.findIndex(o => String(o.id).toLowerCase() === id.toLowerCase());
+
+    if(index === -1){
+        message.textContent = "Order not found. Check your Order ID.";
+        message.style.color = "red";
+        return;
+    }
+
+    if(orders[index].status === "Cancelled"){
+        message.textContent = "This order has been cancelled.";
+        message.style.color = "red";
+        return;
+    }
+
+    orders[index].paymentMethod = method;
+    orders[index].paymentStatus = method === "COD" ? "Pay on Delivery" : "Demo - Not Paid";
+
+    localStorage.setItem(ORDER_KEY, JSON.stringify(orders));
+
+    if(method === "COD"){
+        message.textContent = "COD selected successfully. Pay the delivery partner when your order arrives.";
+        message.style.color = "green";
+    }else{
+        message.textContent = "UPI Demo selected. No money has been charged. Real UPI payment is not enabled.";
+        message.style.color = "green";
+    }
+}
+</script>
+</body>
+</html>
