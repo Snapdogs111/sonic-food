@@ -1,0 +1,125 @@
+
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SONIC FOOD - OTP Login</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+    .box {
+      background: white;
+      padding: 25px;
+      border-radius: 15px;
+      width: 90%;
+      max-width: 350px;
+      box-shadow: 0 3px 15px #ddd;
+    }
+    h2 { color: #e63946; text-align: center; }
+    input, button {
+      width: 100%;
+      padding: 13px;
+      margin-top: 12px;
+      box-sizing: border-box;
+      border-radius: 7px;
+      font-size: 16px;
+    }
+    input { border: 1px solid #ccc; }
+    button {
+      background: #e63946;
+      color: white;
+      border: 0;
+      cursor: pointer;
+    }
+    #message { text-align: center; margin-top: 15px; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>SONIC FOOD</h2>
+    <h3>Mobile OTP Login</h3>
+
+    <input id="phone" type="tel"
+      placeholder="+91XXXXXXXXXX">
+
+    <div id="recaptcha-container"></div>
+
+    <button id="sendBtn">Send OTP</button>
+
+    <input id="otp" type="text"
+      placeholder="Enter 6 Digit OTP">
+
+    <button id="verifyBtn">Verify OTP</button>
+
+    <p id="message"></p>
+  </div>
+
+  <script type="module">
+    import { auth } from "./firebase.js";
+
+    import {
+      RecaptchaVerifier,
+      signInWithPhoneNumber
+    } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-auth.js";
+
+    let confirmationResult;
+
+    const message = document.getElementById("message");
+
+    const verifier = new RecaptchaVerifier(
+      auth,
+      "recaptcha-container",
+      { size: "normal" }
+    );
+
+    document.getElementById("sendBtn").onclick = async () => {
+      const phone = document.getElementById("phone").value.trim();
+
+      if (!/^\+91[0-9]{10}$/.test(phone)) {
+        message.textContent = "Number +91 ke saath 10 digit ka dalein.";
+        return;
+      }
+
+      try {
+        message.textContent = "OTP bheja ja raha hai...";
+
+        confirmationResult = await signInWithPhoneNumber(
+          auth, phone, verifier
+        );
+
+        message.textContent = "OTP request successful. OTP enter karein.";
+      } catch (error) {
+        message.textContent = "Error: " + error.message;
+        verifier.clear();
+      }
+    };
+
+    document.getElementById("verifyBtn").onclick = async () => {
+      const otp = document.getElementById("otp").value.trim();
+
+      if (!confirmationResult) {
+        message.textContent = "Pehle Send OTP dabayein.";
+        return;
+      }
+
+      try {
+        const result = await confirmationResult.confirm(otp);
+
+        message.textContent =
+          "Login Successful! User ID: " + result.user.uid;
+
+      } catch (error) {
+        message.textContent = "OTP Error: " + error.message;
+      }
+    };
+  </script>
+</body>
+</html>
