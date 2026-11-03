@@ -3,455 +3,722 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>SONIC FOOD | Food Delivery</title>
-<link rel="manifest" href="manifest.json">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#e23744">
+<title>SONIC FOOD | Food Delivery</title>
 
 <style>
+:root{
+  --red:#e23744;
+  --dark:#252525;
+  --muted:#777;
+  --bg:#fafafa;
+  --white:#fff;
+  --border:#eee;
+}
 *{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:#f7f7f7;color:#252525}
-header{background:white;padding:15px 5%;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 10px #ddd;position:sticky;top:0;z-index:5}
-.logo{font-size:25px;font-weight:900;color:#e23744}
-header button{width:auto}
-button{border:0;border-radius:8px;padding:12px 18px;background:#e23744;color:white;font-weight:bold;cursor:pointer}
-button:hover{opacity:.9}
-input,select,textarea{width:100%;padding:13px;border:1px solid #ddd;border-radius:8px;margin:7px 0;font-size:15px}
-main{max-width:1100px;margin:auto;padding:18px}
-.hero{background:linear-gradient(120deg,#e23744,#ff765d);color:white;padding:35px 22px;border-radius:16px;margin:15px 0}
-.hero h1{font-size:32px;margin:0 0 10px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px}
-.card{background:white;border-radius:13px;padding:17px;margin:12px 0;box-shadow:0 2px 10px #0000000b}
-.food{display:flex;justify-content:space-between;align-items:center;gap:10px}
-.food button{white-space:nowrap}
-.price{color:#e23744;font-weight:bold}
-.small{color:#777;font-size:13px}
+body{
+  margin:0;
+  font-family:Arial,Helvetica,sans-serif;
+  background:var(--bg);
+  color:var(--dark);
+}
+button,input{font:inherit}
+button{cursor:pointer}
+header{
+  background:white;
+  position:sticky;
+  top:0;
+  z-index:20;
+  box-shadow:0 2px 12px #0000000d;
+}
+.nav{
+  max-width:1200px;
+  margin:auto;
+  padding:15px 20px;
+  display:flex;
+  align-items:center;
+  gap:22px;
+}
+.logo{
+  font-size:27px;
+  font-weight:900;
+  color:var(--red);
+  white-space:nowrap;
+}
+.location{
+  color:#555;
+  font-size:13px;
+  min-width:125px;
+}
+.location strong{display:block;color:#222;font-size:15px}
+.search{
+  flex:1;
+  display:flex;
+  align-items:center;
+  background:#f5f5f5;
+  padding:0 15px;
+  border-radius:10px;
+  height:46px;
+  gap:10px;
+}
+.search input{
+  width:100%;
+  border:0;
+  outline:0;
+  background:transparent;
+}
+.nav button{
+  border:0;
+  background:white;
+  color:#444;
+}
+.nav .cart-btn{
+  background:var(--red);
+  color:white;
+  border-radius:9px;
+  padding:12px 17px;
+  font-weight:bold;
+}
+.account{
+  font-size:13px;
+  max-width:150px;
+  overflow:hidden;
+}
+.container{max-width:1200px;margin:auto;padding:25px 20px}
+.hero{
+  background:linear-gradient(110deg,#8d1421,#e23744 60%,#ff826e);
+  color:white;
+  border-radius:17px;
+  padding:35px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  overflow:hidden;
+  min-height:210px;
+}
+.hero h1{font-size:35px;margin:0 0 12px}
+.hero p{font-size:16px;margin:0}
+.hero .food-emoji{font-size:90px}
+.section-title{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin:30px 0 18px;
+}
+.section-title h2{font-size:23px;margin:0}
+.categories{
+  display:flex;
+  gap:20px;
+  overflow-x:auto;
+  padding:5px 0 15px;
+}
+.category{
+  border:0;
+  background:white;
+  min-width:100px;
+  border-radius:14px;
+  padding:13px 10px;
+  box-shadow:0 2px 12px #00000008;
+  color:#333;
+}
+.category span{display:block;font-size:38px;margin-bottom:8px}
+.category.active{outline:2px solid var(--red);color:var(--red)}
+.filters{
+  display:flex;
+  gap:10px;
+  overflow-x:auto;
+  margin:5px 0 20px;
+}
+.filter{
+  background:white;
+  border:1px solid #ddd;
+  padding:9px 15px;
+  border-radius:8px;
+  white-space:nowrap;
+}
+.filter.active{background:#fff0f0;border-color:var(--red);color:var(--red)}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:22px;
+}
+.card{
+  background:white;
+  border:1px solid #f0f0f0;
+  border-radius:15px;
+  overflow:hidden;
+  transition:.2s;
+  box-shadow:0 3px 12px #00000008;
+}
+.card:hover{transform:translateY(-3px);box-shadow:0 7px 20px #00000012}
+.food-image{
+  height:180px;
+  background:#f6e9df;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:85px;
+  position:relative;
+}
+.offer{
+  position:absolute;
+  left:0;
+  bottom:12px;
+  background:#256fdb;
+  color:white;
+  padding:6px 12px;
+  font-size:12px;
+  font-weight:bold;
+}
+.card-content{padding:15px}
+.card h3{margin:0 0 8px;font-size:18px}
+.card p{margin:5px 0;color:var(--muted);font-size:13px}
+.rating{
+  display:inline-block;
+  background:#24963f;
+  color:white;
+  padding:5px 7px;
+  border-radius:6px;
+  font-size:12px;
+  font-weight:bold;
+}
+.card-bottom{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-top:14px;
+}
+.add-btn{
+  border:1px solid var(--red);
+  background:white;
+  color:var(--red);
+  border-radius:8px;
+  padding:9px 17px;
+  font-weight:bold;
+}
+.add-btn:hover{background:var(--red);color:white}
+.empty{
+  text-align:center;
+  padding:50px 10px;
+  color:#777;
+  grid-column:1/-1;
+}
+.footer{
+  background:#222;
+  color:white;
+  padding:35px 20px;
+  text-align:center;
+  margin-top:50px;
+}
+.footer p{color:#bbb;font-size:13px}
+.modal-bg{
+  display:none;
+  position:fixed;
+  inset:0;
+  z-index:50;
+  background:#0008;
+  justify-content:center;
+  align-items:center;
+  padding:15px;
+}
+.modal{
+  background:white;
+  width:100%;
+  max-width:490px;
+  max-height:90vh;
+  overflow:auto;
+  border-radius:15px;
+  padding:23px;
+}
+.modal h2{margin-top:0}
+.close{
+  float:right;
+  border:0;
+  background:#eee;
+  border-radius:50%;
+  width:32px;
+  height:32px;
+}
+.field{
+  width:100%;
+  padding:13px;
+  border:1px solid #ddd;
+  border-radius:8px;
+  margin:7px 0 13px;
+  outline-color:var(--red);
+}
+.primary{
+  width:100%;
+  border:0;
+  background:var(--red);
+  color:white;
+  padding:13px;
+  border-radius:9px;
+  font-weight:bold;
+  margin:7px 0;
+}
+.google{
+  width:100%;
+  border:1px solid #ddd;
+  background:white;
+  padding:13px;
+  border-radius:9px;
+  font-weight:bold;
+  margin:7px 0;
+}
+.message{font-size:13px;color:var(--red);margin:8px 0}
+.cart-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  border-bottom:1px solid #eee;
+  padding:12px 0;
+}
+.qty button{
+  border:1px solid #ddd;
+  background:white;
+  color:var(--red);
+  padding:5px 10px;
+  border-radius:5px;
+}
+.total-row{
+  display:flex;
+  justify-content:space-between;
+  margin:12px 0;
+  font-size:14px;
+}
+.total-row.final{font-size:19px;font-weight:bold}
+.tabs{display:flex;gap:10px;margin-bottom:15px}
+.tabs button{
+  flex:1;padding:10px;border:1px solid #ddd;
+  background:white;border-radius:8px;
+}
+.tabs button.active{background:#fff0f0;border-color:var(--red);color:var(--red)}
+.order-card{
+  border:1px solid #eee;
+  padding:13px;
+  border-radius:10px;
+  margin:10px 0;
+}
 .hidden{display:none!important}
-#loginPage{position:fixed;inset:0;background:#fff;z-index:20;display:flex;align-items:center;justify-content:center;padding:18px;overflow:auto}
-.loginBox{width:100%;max-width:420px;border:1px solid #eee;border-radius:18px;padding:28px;box-shadow:0 8px 35px #00000012;text-align:center}
-.loginLogo{font-size:35px;color:#e23744;font-weight:900}
-.google{background:white;color:#333;border:1px solid #ccc;width:100%;margin:10px 0}
-.google span{font-weight:bold;color:#4285f4}
-.loginBtn{width:100%;margin-top:8px}
-.divider{display:flex;align-items:center;gap:10px;color:#888;margin:15px 0}
-.divider:before,.divider:after{content:"";height:1px;background:#ddd;flex:1}
-.tabs{display:flex;gap:8px}
-.tabs button{flex:1;background:#eee;color:#333}
-.tabs button.active{background:#e23744;color:white}
-section h2{font-size:22px}
-footer{text-align:center;color:#888;padding:25px}
+@media(max-width:800px){
+  .nav{flex-wrap:wrap;gap:12px}
+  .logo{font-size:23px}
+  .search{order:3;flex-basis:100%}
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  .food-image{height:140px;font-size:65px}
+  .hero{padding:25px}
+  .hero h1{font-size:26px}
+  .hero .food-emoji{font-size:60px}
+}
+@media(max-width:480px){
+  .container{padding:18px 12px}
+  .grid{grid-template-columns:1fr}
+  .card{display:flex}
+  .food-image{width:38%;height:145px;font-size:55px}
+  .card-content{flex:1;padding:12px}
+  .hero{min-height:160px}
+  .hero h1{font-size:23px}
+  .hero .food-emoji{font-size:48px}
+  .location{min-width:100px}
+}
 </style>
 </head>
 
 <body>
 
-<div id="loginPage">
- <div class="loginBox">
-  <div class="loginLogo">🍔 SONIC FOOD</div>
-  <h2>Welcome to SONIC FOOD</h2>
-  <p class="small">Login to order your favourite food</p>
-
-  <button class="google" id="googleLogin">
-   <span>G</span> &nbsp; Continue with Google
-  </button>
-
-  <div class="divider">OR</div>
-
-  <div class="tabs">
-   <button id="loginTab" class="active">Login</button>
-   <button id="signupTab">Sign Up</button>
-  </div>
-
-  <input id="email" type="email" placeholder="Email Address">
-  <input id="password" type="password" placeholder="Password">
-
-  <button id="emailSubmit" class="loginBtn">Login</button>
-  <button id="forgotPassword" class="google">Forgot Password?</button>
-
-  <p id="authMessage" class="small"></p>
-  <p class="small">By continuing, you agree to our Terms and Privacy Policy.</p>
- </div>
-</div>
-
 <header>
- <div class="logo">🍔 SONIC FOOD</div>
- <div>
-  <span id="headerUser"></span>
-  <button id="logout">Logout</button>
- </div>
+  <div class="nav">
+    <div class="logo">SONIC FOOD</div>
+    <div class="location">📍 Delivering to<strong id="locationText">Your Location</strong></div>
+    <div class="search">
+      🔍 <input id="searchInput" placeholder="Search food, restaurant or dish...">
+    </div>
+    <button onclick="openOrders()">My Orders</button>
+    <button class="cart-btn" onclick="openCart()">🛒 Cart <span id="cartCount">0</span></button>
+    <div class="account" id="accountArea">
+      <button onclick="openLogin()">Login / Signup</button>
+    </div>
+  </div>
 </header>
 
-<main id="customerApp" class="hidden">
+<main class="container">
 
- <div class="hero">
-  <h1>Delicious Food, Delivered Fast!</h1>
-  <p>Order your favourite food from SONIC FOOD.</p>
- </div>
+  <section class="hero">
+    <div>
+      <h1>Good food. Good mood.</h1>
+      <p>Your favourite food, delivered to your doorstep.</p>
+      <p style="margin-top:17px;font-weight:bold">Order Now • Enjoy More ❤️</p>
+    </div>
+    <div class="food-emoji">🍔🍕</div>
+  </section>
 
- <div class="card">
-  <h2>📍 Delivery Location</h2>
-  <input id="customerName" placeholder="Your Name">
-  <input id="customerPhone" placeholder="Mobile Number">
-  <textarea id="customerAddress" placeholder="Enter your complete delivery address"></textarea>
-  <button id="getLocation">Use My Current Location</button>
-  <p id="locationMessage" class="small"></p>
- </div>
+  <div class="section-title">
+    <h2>What's on your mind?</h2>
+  </div>
 
- <section class="card">
-  <h2>🍽️ Explore Food Menu</h2>
-  <input id="searchFood" placeholder="Search food...">
-  <div id="menu" class="grid"></div>
- </section>
+  <div class="categories" id="categories">
+    <button class="category active" data-category="All"><span>🍽️</span>All</button>
+    <button class="category" data-category="Biryani"><span>🍛</span>Biryani</button>
+    <button class="category" data-category="Pizza"><span>🍕</span>Pizza</button>
+    <button class="category" data-category="Burger"><span>🍔</span>Burger</button>
+    <button class="category" data-category="Chinese"><span>🥡</span>Chinese</button>
+    <button class="category" data-category="Dessert"><span>🍰</span>Desserts</button>
+    <button class="category" data-category="Drinks"><span>🥤</span>Drinks</button>
+  </div>
 
- <section class="card">
-  <h2>🛒 Your Cart</h2>
-  <div id="cart"></div>
-  <p id="foodTotal">Food Total: ₹0</p>
-  <p id="deliveryCharge">Delivery Charge: ₹25</p>
-  <h2 id="grandTotal">Total: ₹0</h2>
- </section>
+  <div class="section-title">
+    <h2>Popular restaurants near you</h2>
+  </div>
 
- <section class="card">
-  <h2>💳 Payment</h2>
-  <select id="paymentMethod">
-   <option value="COD">Cash on Delivery</option>
-  </select>
-  <p class="small">Online UPI and card payments will be added after payment gateway setup.</p>
-  <button id="placeOrder" style="width:100%">Place Order</button>
-  <p id="orderMessage"></p>
- </section>
+  <div class="filters">
+    <button class="filter active" data-filter="All">All</button>
+    <button class="filter" data-filter="Rating">Rating 4.0+</button>
+    <button class="filter" data-filter="Fast">Fast Delivery</button>
+    <button class="filter" data-filter="Veg">Pure Veg</button>
+  </div>
 
- <section class="card">
-  <h2>📦 My Orders</h2>
-  <div id="myOrders"></div>
- </section>
+  <div class="grid" id="foodGrid"></div>
+
+  <div class="section-title">
+    <h2>Why SONIC FOOD?</h2>
+  </div>
+  <div style="background:white;padding:20px;border-radius:12px;line-height:2">
+    🚀 Fast food delivery<br>
+    🍽️ Delicious food choices<br>
+    💳 Cash on Delivery available<br>
+    ❤️ Easy ordering experience
+  </div>
+
 </main>
 
-<footer>© 2026 SONIC FOOD | Food Delivery</footer>
+<footer class="footer">
+  <h2>SONIC FOOD</h2>
+  <p>Your food, your choice, delivered with love.</p>
+  <p>© 2026 SONIC FOOD. All rights reserved.</p>
+</footer>
+
+<!-- LOGIN MODAL -->
+<div class="modal-bg" id="loginModal">
+  <div class="modal">
+    <button class="close" onclick="closeModal('loginModal')">✕</button>
+    <h2>Welcome to SONIC FOOD</h2>
+    <p style="color:#777;font-size:13px">Login to order your favourite food.</p>
+    <button class="google" id="googleBtn">🌐 Continue with Google</button>
+    <div style="text-align:center;color:#888;margin:12px">OR</div>
+    <div class="tabs">
+      <button class="active" id="loginTab" onclick="switchAuth('login')">Login</button>
+      <button id="signupTab" onclick="switchAuth('signup')">Sign Up</button>
+    </div>
+    <form id="authForm">
+      <input class="field hidden" id="authName" placeholder="Your full name">
+      <input class="field" id="authEmail" type="email" placeholder="Email address" required>
+      <input class="field" id="authPassword" type="password" placeholder="Password (minimum 6 characters)" required minlength="6">
+      <button class="primary" id="authSubmit">Login</button>
+    </form>
+    <p id="authMessage" class="message"></p>
+    <button class="google" onclick="resetPassword()">Forgot Password?</button>
+  </div>
+</div>
+
+<!-- CART MODAL -->
+<div class="modal-bg" id="cartModal">
+  <div class="modal">
+    <button class="close" onclick="closeModal('cartModal')">✕</button>
+    <h2>🛒 Your Cart</h2>
+    <div id="cartItems"></div>
+    <hr>
+    <div class="total-row"><span>Food Total</span><strong id="foodTotal">₹0</strong></div>
+    <div class="total-row"><span>Delivery Charge</span><strong id="deliveryCharge">₹25</strong></div>
+    <div class="total-row final"><span>Grand Total</span><strong id="grandTotal">₹0</strong></div>
+    <button class="primary" onclick="goCheckout()">Proceed to Checkout</button>
+  </div>
+</div>
+
+<!-- CHECKOUT MODAL -->
+<div class="modal-bg" id="checkoutModal">
+  <div class="modal">
+    <button class="close" onclick="closeModal('checkoutModal')">✕</button>
+    <h2>Delivery Details</h2>
+    <input class="field" id="customerName" placeholder="Full Name">
+    <input class="field" id="customerPhone" placeholder="Mobile Number" type="tel">
+    <textarea class="field" id="customerAddress" placeholder="Full delivery address" rows="3"></textarea>
+    <input class="field" id="distance" type="number" min="0" step="0.1" value="2" placeholder="Distance in KM">
+    <p style="font-size:12px;color:#777">Enter the distance in KM. Delivery charge: ₹25 for the first 2 KM, then ₹5 per additional started KM.</p>
+    <div class="total-row"><span>Delivery Charge</span><strong id="checkoutDelivery">₹25</strong></div>
+    <div class="total-row final"><span>Payable Amount</span><strong id="checkoutTotal">₹0</strong></div>
+    <p><strong>Payment Method</strong></p>
+    <label><input type="radio" name="payment" value="COD" checked> Cash on Delivery</label>
+    <button class="primary" onclick="placeOrder()">Place Order</button>
+    <p class="message" id="checkoutMessage"></p>
+  </div>
+</div>
+
+<!-- ORDERS MODAL -->
+<div class="modal-bg" id="ordersModal">
+  <div class="modal">
+    <button class="close" onclick="closeModal('ordersModal')">✕</button>
+    <h2>My Orders</h2>
+    <div id="ordersList"></div>
+  </div>
+</div>
 
 <script type="module">
 import {auth} from "./firebase.js";
-
 import {
- GoogleAuthProvider,
- signInWithPopup,
- createUserWithEmailAndPassword,
- signInWithEmailAndPassword,
- sendPasswordResetEmail,
- onAuthStateChanged,
- signOut
+  GoogleAuthProvider,
+  signInWithPopup,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+  signOut,
+  updateProfile,
+  sendPasswordResetEmail
 } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-auth.js";
 
 const $ = id => document.getElementById(id);
-let signupMode = false;
-let cart = {};
-let customerLat = null;
-let customerLng = null;
 
-const provider = new GoogleAuthProvider();
-provider.setCustomParameters({prompt:"select_account"});
+let currentUser = null;
+let authMode = "login";
+let selectedCategory = "All";
+let selectedFilter = "All";
+let cart = JSON.parse(localStorage.getItem("sonic_food_cart") || "[]");
 
-// GOOGLE LOGIN
-$("googleLogin").onclick = async () => {
- $("authMessage").textContent = "Opening Google Account Selector...";
- try {
-  await signInWithPopup(auth,provider);
-  $("authMessage").textContent = "Login Successful!";
- } catch(e) {
-  $("authMessage").textContent = "Google Login Error: "+e.code;
-  console.error(e);
- }
-};
-
-// LOGIN / SIGNUP TABS
-$("loginTab").onclick = () => {
- signupMode = false;
- $("loginTab").classList.add("active");
- $("signupTab").classList.remove("active");
- $("emailSubmit").textContent = "Login";
- $("authMessage").textContent = "";
-};
-
-$("signupTab").onclick = () => {
- signupMode = true;
- $("signupTab").classList.add("active");
- $("loginTab").classList.remove("active");
- $("emailSubmit").textContent = "Create Account";
- $("authMessage").textContent = "";
-};
-
-// EMAIL LOGIN / SIGNUP
-$("emailSubmit").onclick = async () => {
- const email = $("email").value.trim();
- const password = $("password").value;
-
- if(!email || !password) {
-  $("authMessage").textContent = "Email aur password bharein.";
-  return;
- }
-
- try {
-  if(signupMode) {
-   await createUserWithEmailAndPassword(auth,email,password);
-  } else {
-   await signInWithEmailAndPassword(auth,email,password);
-  }
- } catch(e) {
-  $("authMessage").textContent = "Error: "+e.code;
- }
-};
-
-// FORGOT PASSWORD
-$("forgotPassword").onclick = async () => {
- const email = $("email").value.trim();
- if(!email) {
-  $("authMessage").textContent = "Pehle email enter karein.";
-  return;
- }
- try {
-  await sendPasswordResetEmail(auth,email);
-  $("authMessage").textContent = "Password reset email sent. Inbox check karein.";
- } catch(e) {
-  $("authMessage").textContent = "Error: "+e.code;
- }
-};
-
-// LOGOUT
-$("logout").onclick = async () => {
- await signOut(auth);
-};
-
-// AUTH STATE
-onAuthStateChanged(auth,user => {
- if(user) {
-  $("loginPage").classList.add("hidden");
-  $("customerApp").classList.remove("hidden");
-  $("headerUser").textContent = user.displayName || user.email;
-  $("customerPhone").value = user.phoneNumber || "";
-  showOrders();
- } else {
-  $("loginPage").classList.remove("hidden");
-  $("customerApp").classList.add("hidden");
- }
-});
-
-// MENU
-const defaultMenu = [
- {id:1,name:"Veg Burger",price:80,emoji:"🍔"},
- {id:2,name:"Paneer Pizza",price:180,emoji:"🍕"},
- {id:3,name:"Veg Biryani",price:120,emoji:"🍛"},
- {id:4,name:"French Fries",price:70,emoji:"🍟"},
- {id:5,name:"Cold Drink",price:40,emoji:"🥤"},
- {id:6,name:"Paneer Roll",price:100,emoji:"🌯"}
+const foods = [
+ {id:1,name:"Chicken Biryani",restaurant:"Royal Biryani House",price:199,emoji:"🍛",category:"Biryani",rating:4.5,time:25,offer:"20% OFF"},
+ {id:2,name:"Veg Biryani",restaurant:"Spice Kitchen",price:149,emoji:"🍚",category:"Biryani",rating:4.2,time:30,offer:"15% OFF"},
+ {id:3,name:"Margherita Pizza",restaurant:"Pizza Corner",price:179,emoji:"🍕",category:"Pizza",rating:4.4,time:25,offer:"30% OFF"},
+ {id:4,name:"Cheese Burger",restaurant:"Burger Town",price:129,emoji:"🍔",category:"Burger",rating:4.3,time:20,offer:"10% OFF"},
+ {id:5,name:"Paneer Burger",restaurant:"Burger Town",price:149,emoji:"🍔",category:"Burger",rating:4.1,time:25,offer:"15% OFF"},
+ {id:6,name:"Hakka Noodles",restaurant:"Chinese Wok",price:139,emoji:"🥡",category:"Chinese",rating:4.2,time:30,offer:"20% OFF"},
+ {id:7,name:"Chocolate Cake",restaurant:"Sweet Bakery",price:99,emoji:"🍰",category:"Dessert",rating:4.6,time:20,offer:"10% OFF"},
+ {id:8,name:"Cold Coffee",restaurant:"Cafe Delight",price:89,emoji:"🥤",category:"Drinks",rating:4.1,time:15,offer:""},
+ {id:9,name:"Farmhouse Pizza",restaurant:"Pizza Corner",price:249,emoji:"🍕",category:"Pizza",rating:4.7,time:35,offer:"25% OFF"}
 ];
 
-let menuItems = JSON.parse(localStorage.getItem("sonic_food_menu") || "null");
-if(!Array.isArray(menuItems) || !menuItems.length) menuItems = defaultMenu;
-
-function showMenu(search="") {
- $("menu").innerHTML = "";
-
- menuItems.filter(item =>
-  String(item.name).toLowerCase().includes(search.toLowerCase())
- ).forEach(item => {
-  const div = document.createElement("div");
-  div.className = "card";
-
-  const title = document.createElement("h3");
-  title.textContent = (item.emoji || "🍽️")+" "+item.name;
-
-  const price = document.createElement("p");
-  price.className = "price";
-  price.textContent = "₹"+item.price;
-
-  const btn = document.createElement("button");
-  btn.textContent = "Add to Cart";
-  btn.onclick = () => {
-   cart[item.id] = (cart[item.id] || 0)+1;
-   showCart();
-  };
-
-  div.append(title,price,btn);
-  $("menu").append(div);
+function saveCart(){
+ localStorage.setItem("sonic_food_cart",JSON.stringify(cart));
+ updateCartCount();
+}
+function updateCartCount(){
+ $("cartCount").textContent=cart.reduce((s,x)=>s+x.qty,0);
+}
+function renderFoods(){
+ const query=$("searchInput").value.toLowerCase().trim();
+ const filtered=foods.filter(f=>{
+  const matchCategory=selectedCategory==="All"||f.category===selectedCategory;
+  const matchSearch=(f.name+" "+f.restaurant+" "+f.category).toLowerCase().includes(query);
+  const matchFilter=selectedFilter==="All"||
+   (selectedFilter==="Rating"&&f.rating>=4)||
+   (selectedFilter==="Fast"&&f.time<=25)||
+   (selectedFilter==="Veg"&&["Veg Biryani","Margherita Pizza","Paneer Burger","Hakka Noodles","Chocolate Cake","Cold Coffee","Farmhouse Pizza"].includes(f.name));
+  return matchCategory&&matchSearch&&matchFilter;
  });
+ $("foodGrid").innerHTML=filtered.length?filtered.map(f=>`
+  <div class="card">
+   <div class="food-image">${f.emoji}<div class="offer">${f.offer||"Popular"}</div></div>
+   <div class="card-content">
+    <h3>${f.name}</h3>
+    <p>${f.restaurant}</p>
+    <p><span class="rating">★ ${f.rating}</span> &nbsp; ${f.time} min</p>
+    <div class="card-bottom">
+     <strong>₹${f.price}</strong>
+     <button class="add-btn" onclick="addToCart(${f.id})">ADD +</button>
+    </div>
+   </div>
+  </div>`).join(""):`<div class="empty">No food found. Try another search.</div>`;
 }
-
-$("searchFood").oninput = e => showMenu(e.target.value);
-
-// CART
-function showCart() {
- $("cart").innerHTML = "";
- let total = 0;
-
- menuItems.forEach(item => {
-  const qty = cart[item.id] || 0;
-  if(qty > 0) {
-   total += Number(item.price)*qty;
-
-   const row = document.createElement("div");
-   row.className = "food card";
-
-   const name = document.createElement("span");
-   name.textContent = item.name+" × "+qty+" = ₹"+(item.price*qty);
-
-   const minus = document.createElement("button");
-   minus.textContent = "-";
-   minus.onclick = () => {
-    cart[item.id]--;
-    if(cart[item.id] <= 0) delete cart[item.id];
-    showCart();
-   };
-
-   const plus = document.createElement("button");
-   plus.textContent = "+";
-   plus.onclick = () => {
-    cart[item.id]++;
-    showCart();
-   };
-
-   row.append(name,minus,plus);
-   $("cart").append(row);
-  }
- });
-
- $("foodTotal").textContent = "Food Total: ₹"+total;
- updateTotal();
-}
-
-function updateTotal() {
- const subtotal = menuItems.reduce((sum,item) =>
-  sum+Number(item.price)*(cart[item.id]||0),0);
-
- const km = Number(customerDistance()) || 0;
- const delivery = km <= 2 ? 25 : 25+Math.ceil(km-2)*5;
-
- $("deliveryCharge").textContent = "Delivery Charge: ₹"+delivery;
- $("grandTotal").textContent = "Total: ₹"+(subtotal+delivery);
- return {subtotal,delivery,total:subtotal+delivery};
-}
-
-function customerDistance() {
- return Number(localStorage.getItem("sonic_customer_distance") || 0);
-}
-
-// LOCATION
-$("getLocation").onclick = () => {
- if(!navigator.geolocation) {
-  $("locationMessage").textContent = "Location support available nahi hai.";
-  return;
- }
-
- navigator.geolocation.getCurrentPosition(pos => {
-  customerLat = pos.coords.latitude;
-  customerLng = pos.coords.longitude;
-  $("locationMessage").textContent = "Location captured successfully.";
-
-  localStorage.setItem("sonic_customer_lat",customerLat);
-  localStorage.setItem("sonic_customer_lng",customerLng);
- },err => {
-  $("locationMessage").textContent = "Location permission allow karein ya address manually bharein.";
- },{enableHighAccuracy:true,timeout:15000});
+window.addToCart=id=>{
+ const food=foods.find(f=>f.id===id);
+ const existing=cart.find(x=>x.id===id);
+ if(existing)existing.qty++;
+ else cart.push({...food,qty:1});
+ saveCart();
 };
-
-// DISTANCE NOTE: This version asks for distance manually.
-const distanceInput = document.createElement("input");
-distanceInput.type = "number";
-distanceInput.min = "0.1";
-distanceInput.step = "0.1";
-distanceInput.placeholder = "Delivery distance in KM";
-distanceInput.id = "distanceInput";
-$("locationMessage").after(distanceInput);
-
-distanceInput.oninput = () => {
- localStorage.setItem("sonic_customer_distance",distanceInput.value);
- updateTotal();
+function deliveryFee(){
+ const km=Math.max(0,Number($("distance")?.value||2));
+ return km<=2?25:25+Math.ceil(km-2)*5;
+}
+function cartTotal(){
+ return cart.reduce((s,x)=>s+x.price*x.qty,0);
+}
+window.openCart=()=>{
+ renderCart();
+ $("cartModal").style.display="flex";
 };
+function renderCart(){
+ $("cartItems").innerHTML=cart.length?cart.map(x=>`
+  <div class="cart-row">
+   <div><strong>${x.emoji} ${x.name}</strong><br><small>₹${x.price} each</small></div>
+   <div class="qty">
+    <button onclick="changeQty(${x.id},-1)">−</button>
+    ${x.qty}
+    <button onclick="changeQty(${x.id},1)">+</button>
+   </div>
+   <strong>₹${x.price*x.qty}</strong>
+  </div>`).join(""):`<div class="empty">Your cart is empty 🛒</div>`;
+ const fee=deliveryFee();
+ $("foodTotal").textContent="₹"+cartTotal();
+ $("deliveryCharge").textContent="₹"+fee;
+ $("grandTotal").textContent="₹"+(cartTotal()+fee);
+}
+window.changeQty=(id,change)=>{
+ const item=cart.find(x=>x.id===id);
+ if(item)item.qty+=change;
+ cart=cart.filter(x=>x.qty>0);
+ saveCart();
+ renderCart();
+};
+window.goCheckout=()=>{
+ if(!cart.length){alert("Please add food to cart first.");return;}
+ if(!currentUser){closeModal("cartModal");openLogin();return;}
+ closeModal("cartModal");
+ $("checkoutModal").style.display="flex";
+ $("customerName").value=currentUser.displayName||"";
+ updateCheckoutTotal();
+};
+function updateCheckoutTotal(){
+ const fee=deliveryFee();
+ $("checkoutDelivery").textContent="₹"+fee;
+ $("checkoutTotal").textContent="₹"+(cartTotal()+fee);
+}
+$("distance").addEventListener("input",updateCheckoutTotal);
 
-// ORDER
-$("placeOrder").onclick = () => {
- const user = auth.currentUser;
- if(!user) return;
-
- const name = $("customerName").value.trim();
- const phone = $("customerPhone").value.trim();
- const address = $("customerAddress").value.trim();
-
- const items = menuItems.filter(i => cart[i.id]>0).map(i => ({
-  name:i.name,price:Number(i.price),quantity:cart[i.id]
- }));
-
- if(!items.length) {
-  $("orderMessage").textContent = "Pehle food cart mein add karein.";
-  return;
- }
-
- if(!name || !phone || !address || !distanceInput.value || Number(distanceInput.value)<=0) {
-  $("orderMessage").textContent = "Name, mobile, address aur distance bharein.";
-  return;
- }
-
- const totals = updateTotal();
- const orders = JSON.parse(localStorage.getItem("sonic_food_orders") || "[]");
-
- const order = {
+window.placeOrder=()=>{
+ if(!currentUser){alert("Please login first.");return;}
+ const name=$("customerName").value.trim();
+ const phone=$("customerPhone").value.trim();
+ const address=$("customerAddress").value.trim();
+ const distance=Number($("distance").value);
+ if(!name||!phone||!address){$("checkoutMessage").textContent="Please fill all delivery details.";return;}
+ if(!/^[0-9]{10}$/.test(phone)){ $("checkoutMessage").textContent="Enter a valid 10-digit mobile number.";return;}
+ if(!Number.isFinite(distance)||distance<0){$("checkoutMessage").textContent="Enter a valid distance.";return;}
+ const fee=deliveryFee();
+ const order={
   id:"SF"+Date.now(),
-  customerUid:user.uid,
-  customerEmail:user.email,
-  customerName:name,
-  customerPhone:phone,
-  address,
-  distance:Number(distanceInput.value),
-  latitude:customerLat,
-  longitude:customerLng,
-  items,
-  foodTotal:totals.subtotal,
-  deliveryCharge:totals.delivery,
-  total:totals.total,
+  customerUid:currentUser.uid,
+  customerEmail:currentUser.email,
+  name,phone,address,distance,
+  items:cart.map(x=>({...x})),
+  foodTotal:cartTotal(),
+  deliveryCharge:fee,
+  total:cartTotal()+fee,
   payment:"COD",
-  status:"New Order",
-  createdAt:new Date().toISOString()
+  status:"Order Placed",
+  createdAt:new Date().toLocaleString()
  };
-
- orders.push(order);
+ const orders=JSON.parse(localStorage.getItem("sonic_food_orders")||"[]");
+ orders.unshift(order);
  localStorage.setItem("sonic_food_orders",JSON.stringify(orders));
-
- cart = {};
- showCart();
- showOrders();
- $("orderMessage").textContent = "Order Confirmed! Your Order ID: "+order.id;
+ cart=[];
+ saveCart();
+ closeModal("checkoutModal");
+ alert("Order placed successfully! Order ID: "+order.id);
 };
-
-// MY ORDERS
-function showOrders() {
- const user = auth.currentUser;
- if(!user) return;
-
- const orders = JSON.parse(localStorage.getItem("sonic_food_orders") || "[]");
- const mine = orders.filter(o => o.customerUid === user.uid);
-
- $("myOrders").innerHTML = "";
-
- if(!mine.length) {
-  $("myOrders").textContent = "No orders yet.";
-  return;
+window.openOrders=()=>{
+ if(!currentUser){openLogin();return;}
+ const orders=JSON.parse(localStorage.getItem("sonic_food_orders")||"[]")
+ .filter(o=>o.customerUid===currentUser.uid);
+ $("ordersList").innerHTML=orders.length?orders.map(o=>`
+  <div class="order-card">
+   <strong>Order ID: ${o.id}</strong>
+   <p>${o.items.map(i=>i.name+" × "+i.qty).join(", ")}</p>
+   <p>Total: ₹${o.total} | ${o.payment}</p>
+   <p>Status: <strong>${o.status}</strong></p>
+   <small>${o.createdAt}</small>
+  </div>`).join(""):`<div class="empty">You have not placed any orders yet.</div>`;
+ $("ordersModal").style.display="flex";
+};
+window.openLogin=()=>{$("loginModal").style.display="flex";};
+window.closeModal=id=>{$(id).style.display="none";};
+window.switchAuth=mode=>{
+ authMode=mode;
+ $("loginTab").classList.toggle("active",mode==="login");
+ $("signupTab").classList.toggle("active",mode==="signup");
+ $("authName").classList.toggle("hidden",mode==="login");
+ $("authSubmit").textContent=mode==="login"?"Login":"Create Account";
+ $("authMessage").textContent="";
+};
+$("googleBtn").addEventListener("click",async()=>{
+ const btn=$("googleBtn");
+ btn.disabled=true;
+ $("authMessage").textContent="Opening Google account selector...";
+ try{
+  const provider=new GoogleAuthProvider();
+  provider.setCustomParameters({prompt:"select_account"});
+  await signInWithPopup(auth,provider);
+  closeModal("loginModal");
+ }catch(e){
+  console.error(e);
+  $("authMessage").textContent="Google Login Error: "+e.code;
+ }finally{btn.disabled=false;}
+});
+$("authForm").addEventListener("submit",async e=>{
+ e.preventDefault();
+ const email=$("authEmail").value.trim();
+ const password=$("authPassword").value;
+ const name=$("authName").value.trim();
+ $("authSubmit").disabled=true;
+ $("authMessage").textContent="Please wait...";
+ try{
+  if(authMode==="signup"){
+   if(!name)throw new Error("Please enter your name.");
+   const result=await createUserWithEmailAndPassword(auth,email,password);
+   await updateProfile(result.user,{displayName:name});
+  }else{
+   await signInWithEmailAndPassword(auth,email,password);
+  }
+  closeModal("loginModal");
+ }catch(e){
+  console.error(e);
+  $("authMessage").textContent=e.code||e.message||"Login failed.";
+ }finally{$("authSubmit").disabled=false;}
+});
+window.resetPassword=async()=>{
+ const email=$("authEmail").value.trim();
+ if(!email){$("authMessage").textContent="Enter your email address first.";return;}
+ try{
+  await sendPasswordResetEmail(auth,email);
+  $("authMessage").textContent="Password reset email sent. Check your inbox.";
+ }catch(e){$("authMessage").textContent=e.code||e.message;}
+};
+onAuthStateChanged(auth,user=>{
+ currentUser=user;
+ if(user){
+  $("accountArea").innerHTML=`
+   <div class="account">Hi, ${user.displayName||user.email||"Customer"}<br>
+   <button id="logoutBtn" style="color:#e23744;padding:4px 0">Logout</button></div>`;
+  $("logoutBtn").onclick=async()=>{
+   await signOut(auth);
+   alert("You have logged out.");
+  };
+ }else{
+  $("accountArea").innerHTML='<button onclick="openLogin()">Login / Signup</button>';
  }
-
- mine.slice().reverse().forEach(order => {
-  const div = document.createElement("div");
-  div.className = "card";
-  div.textContent =
-   "Order ID: "+order.id+
-   " | Total: ₹"+order.total+
-   " | Status: "+order.status;
-  $("myOrders").append(div);
+});
+$("searchInput").addEventListener("input",renderFoods);
+document.querySelectorAll(".category").forEach(btn=>{
+ btn.addEventListener("click",()=>{
+  document.querySelectorAll(".category").forEach(x=>x.classList.remove("active"));
+  btn.classList.add("active");
+  selectedCategory=btn.dataset.category;
+  renderFoods();
  });
-}
-
-showMenu();
-showCart();
-
-if("serviceWorker" in navigator && location.protocol.startsWith("http")) {
- navigator.serviceWorker.register("./sw.js").catch(console.error);
+});
+document.querySelectorAll(".filter").forEach(btn=>{
+ btn.addEventListener("click",()=>{
+  document.querySelectorAll(".filter").forEach(x=>x.classList.remove("active"));
+  btn.classList.add("active");
+  selectedFilter=btn.dataset.filter;
+  renderFoods();
+ });
+});
+updateCartCount();
+renderFoods();
+if("serviceWorker" in navigator){
+ window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(console.error));
 }
 </script>
 </body>
